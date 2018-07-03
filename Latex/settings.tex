@@ -70,6 +70,17 @@
 \usepackage{tabularx}
 \usepackage{colortbl}
 \usepackage{float} 
-
+\usepackage{tikz}
+\usetikzlibrary{shapes,arrows}
+\usepackage{multicol}
+\usepackage{vwcol}  
 %Own commands
 \newcolumntype{C}{>{\centering\arraybackslash}X}
+
+\tikzstyle{decision} = [diamond, draw, fill=blue!20,
+text width=4.5em, text badly centered, node distance=2.5cm, inner sep=0pt]
+\tikzstyle{block} = [rectangle, draw, fill=blue!20,
+text width=5em, text centered, rounded corners, minimum height=4em]
+\tikzstyle{line} = [draw, very thick, color=black!50, -latex']
+\tikzstyle{cloud} = [draw, ellipse,fill=red!20, node distance=2.5cm,
+minimum height=2em]

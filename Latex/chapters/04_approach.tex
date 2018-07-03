@@ -4,7 +4,19 @@
 \chapter{Approach}\label{chapter:approach}
 The research question studied in this thesis is the prototypical implementation of heuristics to detect generated code which use techniques of clone detection on the comments that are extracted from the source code. A list of heuristics that detect generated code of several code generators will be derived by means of the comments. Therefore a generator pattern repository will be created. The target of this repository is to provide a database of code generators and their respective characteristic generator pattern which identifies the source code containing it as generated.
 \section{Use Teamscale as lexer to extract Tokens}
-The first step in the approach used in this paper is the lexical analysis of the source code included in the projects used as a benchmark. Teamscale comes with a multitude of lexers applicable for many different programming languages. These
+\begin{vwcol}[widths={0.8\textwidth,0.2\textwidth},
+rule=0pt,indent=1em] 
+The first step in the approach used in this paper is the lexical analysis of the source code included in the projects used as a benchmark. Teamscale comes with a multitude of lexers applicable for many different programming languages. The general workflow in this step is reading each source code file found in the project, perform the lexical analysis and tokenize the source code file into a sequence of logically coherent tokens representing the source code on a logical level.\\
+\begin{tikzpicture}[scale=2, node distance = 2cm, auto]
+\node [block] (init) {Source Code File};
+\node [block, below of=init] (lexer) {Lexical Analysis};
+\node [block, below of=lexer] (tokens) {Sequence of Tokens};
+% Draw edges
+\path [line] (init) -- (lexer);
+\path [line] (lexer) -- (tokens);
+\end{tikzpicture}
+\end{vwcol}
+
 \section{Filter tokens to extract comments}
 \section{Normalize comments for suffix tree clone detection}
 \section{Build suffix tree}
