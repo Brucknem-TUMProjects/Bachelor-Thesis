@@ -2,23 +2,67 @@
 % Add the above to each chapter to make compiling the PDF easier in some editors.
 
 \chapter{Approach}\label{chapter:approach}
-The research question studied in this thesis is the prototypical implementation of heuristics to detect generated code which use techniques of clone detection on the comments that are extracted from the source code. A list of heuristics that detect generated code of several code generators will be derived by means of the comments. Therefore a generator pattern repository will be created. The target of this repository is to provide a database of code generators and their respective characteristic generator pattern which identifies the source code containing it as generated.
-\section{Use Teamscale as lexer to extract Tokens}
-\begin{vwcol}[widths={0.8\textwidth,0.2\textwidth},
-rule=0pt,indent=1em] 
-The first step in the approach used in this paper is the lexical analysis of the source code included in the projects used as a benchmark. Teamscale comes with a multitude of lexers applicable for many different programming languages. The general workflow in this step is reading each source code file found in the project, perform the lexical analysis and tokenize the source code file into a sequence of logically coherent tokens representing the source code on a logical level.\\
-\begin{tikzpicture}[scale=2, node distance = 2cm, auto]
+The research question studied in this thesis is the prototypical implementation of heuristics to detect generated code which use techniques of clone detection on the comments that are extracted from the source code. A list of heuristics that detect generated code of several code generators will be derived by means of the comments. Therefore a generator pattern repository will be created. The target of this repository is to provide a database of code generators and their respective characteristic generator pattern which identifies the source code containing it as generated.\\
+For the use in this thesis a Teamscale server is used which performs basic analysis tasks on the specified projects.
+\section{Use Teamscale as Lexer to extract Tokens}
+The first step in the approach used in this paper is the lexical analysis of the source code included in the projects used as a benchmark. Teamscale comes with a multitude of lexers applicable for many different programming languages. The general workflow in this step is reading each source code file found in the project, perform the lexical analysis and tokenize the source code file into a sequence of logically coherent tokens representing the source code on a logical level. The tokens are saved server-side in the Teamscale instance.
+\begin{center}
+	\begin{tikzpicture}[scale=2, node distance = 4cm, auto]
 \node [block] (init) {Source Code File};
-\node [block, below of=init] (lexer) {Lexical Analysis};
-\node [block, below of=lexer] (tokens) {Sequence of Tokens};
+\node [block, right of=init] (lexer) {Lexical Analysis};
+\node [block, right of=lexer] (tokens) {Sequence of Tokens};
 % Draw edges
 \path [line] (init) -- (lexer);
 \path [line] (lexer) -- (tokens);
 \end{tikzpicture}
-\end{vwcol}
+\end{center}
 
-\section{Filter tokens to extract comments}
+\section{Connect to the Teamscale server and retrieve comments}
+In the second step the tool written for this thesis connects to the Teamscale instance and retrieves the comments.\\
+This has to be done in the following steps:
+\begin{enumerate}
+	\item Get the projects that are currently available in the Teamscale instance. 
+	\item For each project retrieve the respective uniform paths to access the source code files on the server.
+	\item For each uniform path retrieve the comments that are included in the respective source code file. In this step the server filters all tokens that are available for each file. The only important token class is the \textit{COMMENT} class, which itself contains the sub-classes shown in Table \ref{table_commentTypes}.
+	\item The local file path of every source code file is retrieved from the server based on the uniform path. This will get important later in the evaluation.
+	\item Each local file path gets associated to the respective list of comments.
+\end{enumerate}
+
+\begin{tikzpicture}[scale=2, node distance = 3cm, auto]
+	\node [block] (init) {Get Projects};
+	\node [block, right of=init] (uniforms) {Retrieve Uniform Paths};
+	\node [block, right of=uniforms] (filter) {Filter and Transfer Comments};
+	\node [block, right of=filter] (local) {Get Local File Paths};
+	\node [block, right of=local] (associate) {Associate Path to Comments};
+	
+	\path [line] (init) -- (uniforms);
+	\path [line] (uniforms) -- (filter);
+	\path [line] (filter) -- (local);
+	\path [line] (local) -- (associate);
+\end{tikzpicture}
+ 
+\begin{table}[H]
+	\caption{Comment types}
+	\label{table_commentTypes}
+	\begin{tabularx}{\textwidth}{l|L}
+		\textbf{Token type} & \textbf{Example} \\
+		\hline
+		HASH\_COMMENT & \textit{\# Sample PHP script accessing HyperSQL through the ODBC extension module.}\\ 
+		DOCUMENTATION\_COMMENT & \textit{/* Generated By:JJTree: Do not edit this line. */} \\ 
+		SHEBANG\_LINE & \textit{\#!/usr/bin/env python } \\ 
+		TRIPLE\_SLASH\_DIRECTIVE & \textit{/// <reference path="Parser.ts" />} \\ 
+		TRADITIONAL\_COMMENT & \textit{/* Do not modify this code */} \\ 
+		MULTILINE\_COMMENT & \textit{"""Testsuite for TokenRewriteStream class."""} \\ 
+		END\_OF\_LINE\_COMMENT & \textit{// don't care about docstrings} \\ 
+		SIX\_COLUMNS\_COMMENT & \textit{\dots} \\ 
+	\end{tabularx} 
+\end{table}
+
+
 \section{Normalize comments for suffix tree clone detection}
+
+
+
 \section{Build suffix tree}
 \section{Find clones}
 \section{Filter possibly generated clone results}

@@ -74,12 +74,18 @@
 \usetikzlibrary{shapes,arrows}
 \usepackage{multicol}
 \usepackage{vwcol}  
+\usepackage{listings}
+
+% Settings for table
+\setlength{\extrarowheight}{.5em}
+
 %Own commands
 \newcolumntype{C}{>{\centering\arraybackslash}X}
+\newcolumntype{L}{>{\raggedright\arraybackslash}X}
 
-\tikzstyle{decision} = [diamond, draw, fill=blue!20,
+\tikzstyle{decision} = [diamond, draw, fill=TUMAccentLightBlue,
 text width=4.5em, text badly centered, node distance=2.5cm, inner sep=0pt]
-\tikzstyle{block} = [rectangle, draw, fill=blue!20,
+\tikzstyle{block} = [rectangle, draw, fill=TUMAccentLightBlue,
 text width=5em, text centered, rounded corners, minimum height=4em]
 \tikzstyle{line} = [draw, very thick, color=black!50, -latex']
 \tikzstyle{cloud} = [draw, ellipse,fill=red!20, node distance=2.5cm,
