@@ -23,6 +23,10 @@ We refer to \textit{clones} in the context of this thesis as text fragments that
 \subsection{Clone chunk}
 For the use in Ukkonens algorithm for the construction of a suffix tree \cite{Ukkonen1995} the text of the comments has to be normalized in \textit{clone chunks}. The suffix tree clone detection approach uses a sequence of clone chunks and constructs the tree on them. To be suitable each comment is split in separate words, whereas additional information gets appended to each word that will later on be used to identify the origin. This information includes the uniform path to the original source code file, the line number in which the word originated and the programming language.
 
+\subsection{Sentinel}
+\label{chapter_sentinel}
+A sentinel is a subclass of the clone chunk class. The properties a sentinel shares with a clone chunk are filled with default values. The difference is that a check for equality with a clone chunk or another sentinel will always return false. Only if two sentinels are exactly the same the equality check will return true.
+
 \subsection{Clone class}
 \begin{table}
 	\caption{Clone Pair and Clone Class}
@@ -71,14 +75,17 @@ and the extendibility of a software. It defines the probability that an arbitrar
 \subsection{Comment ratio}
 
 \section{Teamscale}
+\label{chapter_teamscale}
 \textit{Teamscale} is developed by the CQSE GmbH which was founded in 2009 as spin-off of Technical University Munich (TUM). They offer innovative consulting and products to help their customers evaluate, control and improve their software quality. \\
 Their main product is Teamscale which is a tool to analyze the quality of code with a variety of static code analyses. It helps to monitor the quality of code over time and is personally configurable to allow users to focus on personal quality goals and keep an eye on the current quality trend.\\
+The supported programming languages of Teamscale are \textit{ABAP, Groovy, Matlab, Simulink/StateFlow, Ada, Gosu, Open CL, SQLScript, C\#, IEC 61131-3 ST, OScript, Swift, C/C++, Java, PHP, TypeScript, Cobol, JavaScript, PL/SQL, Visual Basic .NET, Delphi, Kotlin, Python, Xtend, Fortran, Magik and Rust}.\\
 One major aspect in the quality analysis performed by Teamscale is the \textit{Clone Detection}. With it duplicated code created by copy \& paste can be found automatically.
 \subsection{Suffix Tree Clone Detection}
 In \cite{Ukkonen1995}, an on-line algorithm is presented for constructing the suffix tree for a given string in time linear in the length of the string. Based on this data structure a string-matching algorithm is presented in \cite{Ukkonen1993}. These two algorithms have been extended to be usable in this thesis to detect clones among comments in source code.
 \subsection{Lexer}
 A second important aspect that is included in Teamscale are the lexers for a variety of programming languages. A tokenizer, also called lexical scanner (short: \textit{Lexer}) is a programm that splits plain text in a sequence of logical concatenated units, so called tokens. The plain text tokenized by the lexer can be anything, but we will restrict it to source code.
 \subsection{Token}
+\label{subsection_token}
 Tokens in the context of Teamscale are objects that are returned as a sequence by the lexer. They provide a data structure holding the main properties of the smallest possible units a source code file can be split. An overview of these properties is shown in Table \ref{table_tokenProperties}.
 
 \begin{table}
