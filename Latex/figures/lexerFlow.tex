@@ -1,0 +1,13 @@
+% !TeX root = ../main.tex
+% Add the above to each chapter to make compiling the PDF easier in some editors.
+
+\begin{center}
+	\begin{tikzpicture}[scale=2, node distance = 4cm, auto]
+		\node [block] (init) {Source Code File};
+		\node [block, right of=init] (lexer) {Lexical Analysis};
+		\node [block, right of=lexer] (tokens) {Sequence of Tokens};
+		% Draw edges
+		\path [line] (init) -- (lexer);
+		\path [line] (lexer) -- (tokens);
+	\end{tikzpicture}
+\end{center}

@@ -1,0 +1,16 @@
+% !TeX root = ../main.tex
+% Add the above to each chapter to make compiling the PDF easier in some editors.
+
+\begin{table}
+	\caption[Comment enclosings]{Programming language specific regular expressions that represent comment identifiers (Escape characters are omitted).}
+	\label{table:commentEnclosings}
+	\begin{tabularx}{\textwidth}{l|L}
+		\textbf{Programming language(s)} & Regular expression \\
+		\hline
+		C-like & ((\textasciicircum(/**|/*|*|//))|(*/)\$) \\
+		Ada & (\textasciicircum(--)) \\
+		Matlab & (\textasciicircum(\%)) \\
+		Python & (\textasciicircum(\#)) \\
+		XML & ((\textasciicircum(<!-{}-))|(-{}->)\$)
+	\end{tabularx}
+\end{table}

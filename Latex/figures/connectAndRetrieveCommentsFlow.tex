@@ -1,0 +1,16 @@
+% !TeX root = ../main.tex
+% Add the above to each chapter to make compiling the PDF easier in some editors.
+\begin{center}
+	\begin{tikzpicture}[scale=2, node distance = 3cm, auto]
+		\node [block] (init) {Get Projects};
+		\node [block, right of=init] (uniforms) {Retrieve Uniform Paths};
+		\node [block, right of=uniforms] (filter) {Filter and Transfer Comments};
+		\node [block, right of=filter] (local) {Get Local File Paths};
+		\node [block, right of=local] (associate) {Associate Path to Comments};
+		
+		\path [line] (init) -- (uniforms);
+		\path [line] (uniforms) -- (filter);
+		\path [line] (filter) -- (local);
+		\path [line] (local) -- (associate);
+	\end{tikzpicture}
+\end{center}
