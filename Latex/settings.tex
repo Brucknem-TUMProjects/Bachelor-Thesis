@@ -75,14 +75,20 @@
 \usepackage{multicol}
 \usepackage{vwcol}  
 \usepackage{listings}
+\usepackage{color}
 
 % Settings for table
 \setlength{\extrarowheight}{.5em}
 
 %Own commands
+\newcommand{\annotation}[1]{\textcolor{red}{#1}}
+\newcommand{\copied}{\textcolor{red}{Im Moment noch einfach kopiert. Dringend umschreiben.}\\}
+
+%Table settings
 \newcolumntype{C}{>{\centering\arraybackslash}X}
 \newcolumntype{L}{>{\raggedright\arraybackslash}X}
 
+%Tikzstyles
 \tikzstyle{decision} = [diamond, draw, fill=TUMAccentLightBlue,
 text width=4.5em, text badly centered, node distance=2.5cm, inner sep=0pt]
 \tikzstyle{block} = [rectangle, draw, fill=TUMAccentLightBlue,
