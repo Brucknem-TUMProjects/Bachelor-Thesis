@@ -23,6 +23,9 @@ We refer to \textit{clones} in the context of this thesis as text fragments that
 \subsection{Clone chunk}
 For the use in Ukkonens algorithm for the construction of a suffix tree \cite{Ukkonen1995} the text of the comments has to be normalized in \textit{clone chunks}. The suffix tree clone detection approach uses a sequence of clone chunks and constructs the tree on them. To be suitable each comment is split in separate words, whereas additional information gets appended to each word that will later on be used to identify the location of the word in the original comment. This information includes the uniform path to the original source code file, the line number in which the word originated and the programming language.
 
+\subsection{Sentinel}
+A boolean comparison for equality of a sentinel and another object will always evaluate to false. It is used on the one site to separate coherent sequences of clone chunks from each other, and on the other hand to convert an implicit suffix tree into an explicit one. A \textit{sentinel} is a subclass of the \textit{clone chunk} class. 
+
 \subsection{Clone class}
 A \textit{clone class} is the maximal set of comments in which any two of the comments form a \textit{clone pair}.
 Table \ref{table:cloneClass} depicts an example of the appearance of 3

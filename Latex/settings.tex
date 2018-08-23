@@ -19,6 +19,7 @@
 \usepackage{listings}
 \usepackage{lstautogobble}
 \usepackage{tikz}
+\usepackage{tikz-qtree}
 \usepackage{pgfplots}
 \usepackage{pgfplotstable}
 \usepackage{booktabs}
@@ -63,7 +64,12 @@
   columns=fullflexible,
   autogobble,
   keywordstyle=\bfseries\color{TUMBlue},
-  stringstyle=\color{TUMAccentGreen}
+  stringstyle=\color{TUMAccentGreen},
+  belowskip=2em,
+  aboveskip=2em,
+  language=java,
+  frame=Tb,
+  numbers=left
 }
 
 %Own added packages
@@ -71,7 +77,7 @@
 \usepackage{colortbl}
 \usepackage{float} 
 \usepackage{tikz}
-\usetikzlibrary{shapes,arrows}
+\usetikzlibrary{shapes,automata,positioning,arrows}
 \usepackage{multicol}
 \usepackage{vwcol}  
 \usepackage{listings}
@@ -81,8 +87,9 @@
 \setlength{\extrarowheight}{.5em}
 
 %Own commands
-\newcommand{\annotation}[1]{\textcolor{red}{#1}}
-\newcommand{\copied}{\textcolor{red}{Im Moment noch einfach kopiert. Dringend umschreiben.}\\}
+\newcommand{\annotation}[1]{\textbf{\textcolor{red}{#1}}}
+\newcommand{\copied}{\quad\\\textcolor{red}{Im Moment noch einfach kopiert. Dringend umschreiben.}\\}
+\newcommand{\code}[1]{\textcolor{TUMBlue}{\texttt{#1}}}
 
 %Table settings
 \newcolumntype{C}{>{\centering\arraybackslash}X}
