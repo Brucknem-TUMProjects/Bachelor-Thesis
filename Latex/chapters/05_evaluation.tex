@@ -2,3 +2,73 @@
 % Add the above to each chapter to make compiling the PDF easier in some editors.
 
 \chapter{Evaluation}\label{chapter:evaluation}
+\section{Tasks to evaluate}
+
+\subsection{Evaluation of the completeness and accuracy of the produced heuristics against a reference data set}
+To evaluate the completeness and accuracy of the heuristics produced during the development of this thesis a reference data set has been used.\\
+With this data set it is tested how many generator patterns can be found during execution and how many clone classes are falsely classified as not generated. \\
+\annotation{Why is task relevant}
+
+\subsection{Automatic classification of source code in a huge collection of open source systems \& evaluation of the ratio of generated code}
+To test the generator patterns stored in the repository a variety of open source projects have been acquired.\\
+\annotation{Why is task relevant}
+\section{Study Objects}
+
+\subsection{Qualitas Corpus}
+The Qualitas Corpus is a curated collection of software systems intended to be used for empirical studies of code artefacts. The primary goal is to provide a resource that supports reproducible studies of software. The current release of the Corpus contains open-source Java software systems, often multiple versions. \cite{Tempero2010} \\
+To be easily comparable to the work in \cite{Bernwieser2014} the same two test environments have been reused and which are subsets of the projects included in the Qualitas Corpus. The classification of the projects included in the two environments has been made in \cite{Bernwieser2014}, whereas one consists of projects including generated code and the other fully excluding this type of source code.\\
+Both collections show a very wide variation range regarding their project sizes; projects with generated code range from 35.388 \textit{(SableCC)} to 1.540.009 \textit{(GT2)}, projects without generated code from 29.587 \textit{(Informa)} to 645.715 \textit{(Jtopen)} \cite{Bernwieser2014}. The project \textit{Mahout} has been replaced by \textit{Xalan} because it isn't included in the Qualitas Corpus anymore.\\
+The distribution of the projects over the environments is shown in Table~\ref{table:qualitasCorpusOverview}.
+\annotation{The relevant characteristics comprise programming language, size, age, number of developers and a short description of their functionality.}
+\input{tables/qualitasCorpusOverview.tex}
+\subsection{Random Git Projects}
+\annotation{Wenns sein muss hinzufügen}
+
+\section{Study Design}
+
+
+\subsection{Set of generated code \textit{G}}
+
+\subsubsection{Set of detected generated code \textit{DG}}
+
+\subsubsection{Set of undetected generated code \textit{NG}}
+
+\subsection{Set of manually maintained code \textit{M}}
+
+\subsubsection{Set of detected manually maintained code \textit{DM}}
+
+\subsubsection{Set of undetected manually maintained code \textit{NM}}
+
+\subsection{Ratio of generated to manually maintained code}
+
+\subsection{Ratio of not detected generated code to detected generated code}
+
+\subsection{Ratio of not detected generated code to detected manually maintained code}
+
+\section{Procedure}
+
+\subsection{Benchmarking}
+
+\subsection{Thresholds}
+
+\section{Results}
+
+\subsection{Qualitas Corpus}
+
+\subsection{Random Git Projects}
+
+\section{Discussion}
+
+\subsection{Completeness and accuracy}
+
+\subsection{Relevance of results}
+
+\section{Threats to validity}
+
+\subsection{Wrong filtering}
+
+\subsection{Minimum clone length vs. irrelevant data}
+
+\subsection{Representativeness of data sets}
+
+\subsection{Generators without pattern}
