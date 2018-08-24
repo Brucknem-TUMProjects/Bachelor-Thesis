@@ -15,33 +15,45 @@ To test the generator patterns stored in the repository a variety of open source
 \section{Study Objects}
 
 \subsection{Qualitas Corpus}
-The Qualitas Corpus is a curated collection of software systems intended to be used for empirical studies of code artefacts. The primary goal is to provide a resource that supports reproducible studies of software. The current release of the Corpus contains open-source Java software systems, often multiple versions. \cite{Tempero2010} \\
-To be easily comparable to the work in \cite{Bernwieser2014} the same two test environments have been reused and which are subsets of the projects included in the Qualitas Corpus. The classification of the projects included in the two environments has been made in \cite{Bernwieser2014}, whereas one consists of projects including generated code and the other fully excluding this type of source code.\\
-Both collections show a very wide variation range regarding their project sizes; projects with generated code range from 35.388 \textit{(SableCC)} to 1.540.009 \textit{(GT2)}, projects without generated code from 29.587 \textit{(Informa)} to 645.715 \textit{(Jtopen)} \cite{Bernwieser2014}. The project \textit{Mahout} has been replaced by \textit{Xalan} because it isn't included in the Qualitas Corpus anymore.\\
+The Qualitas Corpus is a curated collection of software systems intended to be used for empirical studies of code artefacts. The primary goal is to provide a resource that supports reproducible studies of software. The current release of the Corpus contains open-source Java software systems, often multiple versions. \cite{Tempero2010}\\
+Nonetheless the procedure is designed to be also applicable onto sets including other programming languages as well as sets of projects with mixed ones.\\
+The current release is from the year 2013 and includes 112 different projects. To be easily comparable to the work in \cite{Bernwieser2014}, the same two subsets of projects have been reused. The classification of the projects included in the two sets has been made in \cite{Bernwieser2014}, whereas one consists of projects including generated code and the other fully excluding this type of source code.\\
+Both collections show a very wide variation range regarding their project sizes; projects with generated code range from 35.388 \textit{(SableCC)} to 1.540.009 \textit{(GT2)}, projects without generated code from 29.587 \textit{(Informa)} to 645.715 \textit{(Jtopen)} \cite{Bernwieser2014}. 
+The project \textit{Mahout} has been replaced by \textit{Xalan} because it isn't included in the Qualitas Corpus anymore.\\ 
 The distribution of the projects over the environments is shown in Table~\ref{table:qualitasCorpusOverview}.
-\annotation{The relevant characteristics comprise programming language, size, age, number of developers and a short description of their functionality.}
 \input{tables/qualitasCorpusOverview.tex}
 \subsection{Random Git Projects}
 \annotation{Wenns sein muss hinzufügen}
 
 \section{Study Design}
+\annotation{This section describes how the study, using the information from the study objects, attempts to answer the research questions.}
+Different proportions of generated and manually maintained code have been calculated to be comparable to the set of all source code $S$. 
 
+\subsection{Set of generated code $G$}
+To evaluate the accuracy and completeness of the generator pattern repository the set of generated code $G$ will get calculated for the used projects.\\
+Furthermore the set of generated code will be split up into two subsets:
+\begin{itemize}
+	\item Set of detected generated code $DG$
+		\subitem This set is easily derivable by applying the found generator patterns onto the source code files and extracting the ones including the patterns. The proportion of correct as generated classified code $DG^+$ in contrast to the falsely classified code $DG^-$ is evaluated.
+	\item Set of undetected generated code $NG$
+		\subitem From the left set of unclassified source code a manual classification has been performed to extract the source code sections that are obviously generated. At this point we are partially relying on the previously performed classification done in \cite{Bernwieser2014} to speed up the process and for a better comparability.
+\end{itemize}
 
-\subsection{Set of generated code \textit{G}}
-
-\subsubsection{Set of detected generated code \textit{DG}}
-
-\subsubsection{Set of undetected generated code \textit{NG}}
-
-\subsection{Set of manually maintained code \textit{M}}
-
-\subsubsection{Set of detected manually maintained code \textit{DM}}
-
-\subsubsection{Set of undetected manually maintained code \textit{NM}}
+\subsection{Set of manually maintained code $M$}
+After the extraction of generated code the left set of source code is labeled as manually maintained due to the assumption of being mutually exclusive to each other.\\
+Additionally, the set of manually maintained code will again be split up into two subsets:
+\begin{itemize}
+	\item Set of detected manually maintained code $DM$
+	\subitem This subset can be easily derived by subtracting the set $DG^+$ from $S$ using the mutual exclusivity. 
+	\item Set of undetected manually maintained code $NM$
+	\subitem This set will be extracted by investigating into the set $DG$ an searching for wrongly classified manually maintained code that is labeled as generated.
+\end{itemize}
 
 \subsection{Ratio of generated to manually maintained code}
+The ratio of generated to manually maintained code $|DG^+|/|DM|$ is calculated to estimate the significance of generated code for software projects.
 
 \subsection{Ratio of not detected generated code to detected generated code}
+To evaluate the completeness and accuracy the ratio of not detected generated code to detected generated code $|DG|/|NG|$ is calculated. 
 
 \subsection{Ratio of not detected generated code to detected manually maintained code}
 
