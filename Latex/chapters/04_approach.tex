@@ -2,10 +2,10 @@
 % Add the above to each chapter to make compiling the PDF easier in some editors.
 
 \chapter{Approach}\label{chapter:approach}
-One aim of this thesis is the prototypical implementation of heuristics to detect generated code which uses techniques of clone detection on the comments that are extracted from the source code. A list of patterns that detect generated code of several code generators is derived by means of the comments. Following a generator pattern repository has been created. The target of this repository is to provide a database of code generators and their respective characteristic generator pattern which identifies the source code containing it as generated.\\
+One aim of this thesis is the prototypical implementation of heuristics to detect generated code which uses techniques of clone detection on the comments that are extracted from the source code. A list of patterns that detect generated code of several code generators is derived by means of the comments. Following, a generator pattern repository has been created. This repository is to provide a database of code generators and their respective characteristic generator pattern which identifies the source code containing it as generated.\\
 We use a teamscale server to perform the basic analysis tasks on the specified projects.
 \section{Use Teamscale as Lexer to extract Tokens}
-The first step in the approach used in this paper is the lexical analysis of the source code included in the projects used as a benchmark. Teamscale comes with a multitude of lexers applicable for many different programming languages. The general workflow in this step is reading each source code file found in the project, perform the lexical analysis and tokenize the source code file into a sequence of logically coherent tokens representing the source code on a logical level. The tokens are saved server-side in the Teamscale instance.
+The first step in the approach used in this paper is the lexical analysis of the source code included in the projects. Teamscale comes with a multitude of lexers applicable for many different programming languages. The general workflow in this step is reading each source code file found in the project, perform the lexical analysis and tokenize the source code file into a sequence of logically coherent tokens representing the source code on a logical level. The tokens are saved server-side in the Teamscale instance.
 \input{figures/lexerFlow.tex}
 
 \section{Connect to the Teamscale server and retrieve comments}
@@ -14,7 +14,7 @@ In the second step the tool written for this thesis connects to the Teamscale in
 This has to be done in the following steps:
 \begin{enumerate}
 	\item Get the projects that are currently available in the Teamscale instance. 
-	\item For each project retrieve the respective uniform paths to access the source code files on the server.
+	\item For each project retrieve the respective uniform path to access the source code files on the server.
 	\item For each uniform path retrieve the comments that are included in the respective source code file. In this step the server filters all tokens that are available for each file. The only important token class is the \textit{COMMENT} class, which itself contains the sub-classes shown in Table \ref{table:commentTypes}.
 	\item The local file path of every source code file is retrieved from the server based on the uniform path. This will get important later in the evaluation.
 	\item Each local file path gets associated to the respective list of comments.
@@ -28,15 +28,22 @@ Once the comments are received from the Teamscale server instance they have to g
 \subsection{Create thread for each source code file}
 The step \ref{section:retrieveComments} produces a \code{Map} in which every local path to a source code file is associated with its respective list of comments.
 In the first part of the preparation one thread is generated for each source code file respective local file path. These threads will be responsible for the preparation of each single file and the results will be merged at the end.
-\subsection{Remove unnecessary characters and whitespaces}
-At first the comments are split at the linebreaks into single lines and leading and trailing whitespaces of each line are removed.\\
-Susequent the comment enclosings are removed using a regular expression on every line to remove the language specific identifiers of comments. This regular expression is build from a list of regular expressions that represent the specific comment enclosings in the respective language.\\ 
-These are concatenated with the \textit{OR}-operator to generate a generic regular expression for most programming language supported by Teamscale (\ref{section:teamscale}). Following this step the the leading and trailing whitespaces are removed again.\\
-An overview of the regular expressions that are used in this step are shown in table \ref{table:commentEnclosings}.
-\input{tables/commentEnclosings.tex}
 
-\subsection{Convert words into clone chunks}
-The resulting lines of the previous step are again split into single words. Every word is at first checked if it holds valuable information for the approach. To check the value of each word it gets checked if it contains alphabetic letters \textit{(a-z, A-Z)} or digits. If a word only consists of nonalphabetic and no digits it gets sorted out \textit{(e.g. "-{}-{}-{}-{}-{}-{}-{}-")}.\\
+%\subsection{Remove unnecessary characters and whitespaces}
+%At first the comments are split at the linebreaks into single lines and leading and trailing whitespaces of each line are removed.\\
+%Susequent the comment enclosings are removed using a regular expression on every line to remove the language specific identifiers of comments. This regular expression is build from a list of regular expressions that represent the specific comment enclosings in the respective language.\\ 
+%These are concatenated with the \textit{OR}-operator to generate a generic regular expression for most programming language supported by Teamscale (\ref{section:teamscale}). Following this step the the leading and trailing whitespaces are removed again.\\
+%An overview of the regular expressions that are used in this step are shown in table \ref{table:commentEnclosings}.
+%\input{tables/commentEnclosings.tex}
+%
+%\subsection{Convert words into clone chunks}
+%The resulting lines of the previous step are again split into single words. Every word is at first checked if it holds valuable information for the approach. To check the value of each word it gets checked if it contains alphabetic letters \textit{(a-z, A-Z)} or digits. If a word only consists of nonalphabetic and no digits it gets sorted out \textit{(e.g. "-{}-{}-{}-{}-{}-{}-{}-")}.\\
+%The remaining words that bring a value to the approach are now converted into clone chunks. Therefore is added to every word the type of the comment, the offset and the linenumber of the comment and the local file path the comment originated from.\\
+%For an overview over these properties of a comment see \ref{section:token}.
+
+\subsection{Convert comments into clone chunks}
+At first the comments are split at the linebreaks into single lines and leading and trailing whitespaces of each line are removed. The resulting lines are in turn split at the whitespaces separating single words and expressions.\\
+The list of words gets now iterated and every word gets checked if it holds any valuable information. To evaluate the value of each word it is checked if it contains alphabetic letters \textit{(a-z, A-Z)} or digits. If a word only consists of nonalphabetic characters and no digits it gets sorted out \textit{(e.g. "-{}-{}-{}-{}-{}-{}-{}-", "/**", "<!--")}.\\
 The remaining words that bring a value to the approach are now converted into clone chunks. Therefore is added to every word the type of the comment, the offset and the linenumber of the comment and the local file path the comment originated from.\\
 For an overview over these properties of a comment see \ref{section:token}.
 
@@ -47,8 +54,7 @@ To prevent the suffix tree clone detection algorithm from intermixing the commen
 Once all threads are finished, resulting in all comments being converted into lists of clone chunks and sentinels being added to the end of each list, all lists get concatenated into one hugh list containing all words of the comments. On this list the suffix tree clone detection algorithm can now be applied.
 
 \section{Build suffix tree}
-\copied
-Esko Ukkonen introduced an algorithm to construct suffix trees on strings in his paper for \textit{Algorithmica} in 1995 \cite{Ukkonen1995}. A suffix tree is a trie-like structure representing all suffixes of a string. To construct it a string gets processed symbol by symbol from the start to the end. The construction is based on the observation is that the suffixes of $T^i = t_1 \dots t_i$ can be obtained from catenating $t_i$ to the end of each suffix of $T^{i-1} = t_1 \dots t_{i-1}$. \\
+Esko Ukkonen introduced an algorithm to construct suffix trees on strings in his paper for \textit{Algorithmica} in 1995 \cite{Ukkonen1995}. A suffix tree is a trie-like structure representing all suffixes of a string. To construct it a string gets processed symbol by symbol from the start to the end. The construction is based on the observation is that the suffixes of $T^i = t_1 \dots t_i$ can be obtained from catenating $t_i$ to the end of each suffix of $T^{i-1} = t_1 \dots t_{i-1}$. \cite{Ukkonen1995}\\
 For this thesis the algorithm has been expanded to work on any arbitrary datastructure. The simple observation behind this is that a string is just a list of characters. When building the suffix tree this list gets traversed from left to right and each element is added by following one of three rules:
 \begin{enumerate}
 	\item Walk all paths and add the new element.
@@ -57,18 +63,16 @@ For this thesis the algorithm has been expanded to work on any arbitrary datastr
 \end{enumerate}
 This property of the algorithm has been used to extend it to a generic version of it by allowing any list of data. The only mandatory property the data structure must provide is an equality function that can be evaluated in linear time to keep the linear time property of the algorithm. Therefore a function has been implemented that calculates a hash value of the data structure and performs a simple \textit{integer - integer} comparison that keeps the linear time property.\\
 Figure~\ref{fig:suffixTreeConstructionImplicit} illustrates the implicit suffix tree on the sequence of clone chunks representing the list of words \textit{Do not modify \dots Do not modify}. After adding a sentinel at the end of the list the suffix tree becomes explicit, which is used in this thesis and shown in Figure~\ref{fig:suffixTreeConstructionExplicit}.\\
-For a deeper insight into the details of the algorithm for suffix tree construction see \cite{Ukkonen1995}.
+For a deeper insight into the details of the algorithm for suffix tree construction see \cite{Ukkonen1995}. 
+\annotation{Weiß nicht wo der Whitespace her kommt?!}
 \input{figures/SuffixTreeConstruction/implicit.tex}
 \input{figures/SuffixTreeConstruction/explicit.tex}
 
 \section{Find clones}
-\annotation{Weiß nicht genau wie ich das erklären soll.}
 To find duplicate sequences in the suffix tree a variety of tree search algorithms can be applied. They are all based on the observation that the clones are represented by the paths in the suffix tree containing the searched sequence. Listing~\ref{lst:cloneBFS} can be used to perform a breadth first search to find clones.
 \input{listings/findClones.tex}
-
 When the graph search is performed the clone classes get returned as a \code{List} whereas each entry represents a \code{CloneClass}. Each \code{CloneClass} itself is a \code{List} of \code{List} of clone chunks. Each inner \code{List} of the \code{CloneClass} represents a clone instance. The clones consist of a \code{List} of clone chunks which have the additional information added to the string representation as shown in Listing~\ref{lst:cloneClass}. So every clone that is represented by the \code{List} named \textit{members} can be associated to the file it originated from, what will become important in the next steps.
 \input{listings/cloneClass.tex}
-
 This \code{List} of clone chunks gets now converted into a \code{List} of \code{CloneResult}. A \code{CloneResult} is a more compact and convenient representation of the clone classes. Each has the text it represents as its \textit{name} and a \code{List} of all occurrences associated, whereas a occurrence is a \code{Pair} representing the \texttt{originID} and the \texttt{line number}. 
 \input{listings/cloneResult.tex}
 
@@ -77,11 +81,13 @@ As one of the last steps the clone results get filtered so that possibly generat
 As stated in \cite{Bernwieser2014} most generator patterns will include the word \textit{generated}. From this observation a filter pattern has been derived and extended which is shown in Listing~\ref{lst:generatorPattern}. With this pattern the \code{List} of \code{CloneResult} gets filtered by their names.
 \input{listings/generatorPattern.tex}
 
+\section{Accumulation of results}
+
 \section{Generate links to the files}
+\annotation{Raus und dafür deep copy rein + repository save}
 The last step that is performed by the tool written for this thesis is to generate links to the files where the clones originated from. To do so two folders are created, one holding the possibly generated clone classes and one that holds the ones that are unlikely to be generated.\\
 Within these folders are again folders created that are named by the number of occurrences of the including clone classes.\\
 For each clone class is now again a folder created that is named as the clone class, within which links are created to the files where the clone classes originated from and its respective line number.
-\input{listings/folderStructure.tex}
 
 \section{Generation of a Generator-Pattern Repository}
 

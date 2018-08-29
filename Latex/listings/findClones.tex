@@ -2,13 +2,14 @@
 % Add the above to each chapter to make compiling the PDF easier in some editors.
 \copied
 \begin{lstlisting}[
-	caption=Breadth first search algorithm to find all containing branches in a suffix tree for a given sequence.,
+	caption=Recursive Breadth First search algorithm to find all containing branches in a suffix tree for a given sequence.,
 	label=lst:cloneBFS] 
-	consider current vertex cur
-	for (each child of current vertex cur)
-		if (P does not match child.label)
+	for each (childNode in currentNode.children)
+		if(childNode.label does not match sequence)
 			continue
-	if (a full match) return all results
-	if (a partial match) go deeper
-	return no match	
+		if(childNode.label fully matches sequence)
+			return all childBranches
+		if(childNode.label partially matches sequence)
+			recurse on childNode
+	return no match
 \end{lstlisting}
