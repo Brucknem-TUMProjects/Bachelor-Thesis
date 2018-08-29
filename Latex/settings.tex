@@ -67,8 +67,8 @@
   autogobble,
   keywordstyle=\bfseries\color{TUMBlue},
   stringstyle=\color{TUMAccentGreen},
-  belowskip=2em,
-  aboveskip=2em,
+  belowskip=1em,
+  aboveskip=1em,
   language=java,
   frame=Tb,
   numbers=left
@@ -84,14 +84,21 @@
 \usepackage{vwcol}  
 \usepackage{listings}
 \usepackage{color}
+\usepackage{ltablex}
 
 % Settings for table
-\setlength{\extrarowheight}{.5em}
+%\setlength{\extrarowheight}{.5em}
+%\setlength{\belowcaptionskip}{-10pt}
 
 %Own commands
 \newcommand{\annotation}[1]{\textbf{\textcolor{red}{#1}}}
 \newcommand{\copied}{\quad\\\textcolor{red}{Im Moment noch einfach kopiert. Dringend umschreiben.}\\}
 \newcommand{\code}[1]{\large{\textcolor{TUMBlue}{\texttt{#1}}}\normalsize}
+\newcommand{\return}{$\hookleftarrow$}
+\newcommand{\version}{<Version>}
+\newcommand{\timestamp}{<Timestamp>}
+\newcommand{\project}{<Project>}
+\newcommand{\class}{<Class>}
 
 %Table settings
 \newcolumntype{C}{>{\centering\arraybackslash}X}

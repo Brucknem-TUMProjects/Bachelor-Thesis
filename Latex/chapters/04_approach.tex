@@ -54,6 +54,8 @@ To prevent the suffix tree clone detection algorithm from intermixing the commen
 Once all threads are finished, resulting in all comments being converted into lists of clone chunks and sentinels being added to the end of each list, all lists get concatenated into one hugh list containing all words of the comments. On this list the suffix tree clone detection algorithm can now be applied.
 
 \section{Build suffix tree}
+\input{figures/SuffixTreeConstruction/implicit.tex}
+\input{figures/SuffixTreeConstruction/explicit.tex}
 Esko Ukkonen introduced an algorithm to construct suffix trees on strings in his paper for \textit{Algorithmica} in 1995 \cite{Ukkonen1995}. A suffix tree is a trie-like structure representing all suffixes of a string. To construct it a string gets processed symbol by symbol from the start to the end. The construction is based on the observation is that the suffixes of $T^i = t_1 \dots t_i$ can be obtained from catenating $t_i$ to the end of each suffix of $T^{i-1} = t_1 \dots t_{i-1}$. \cite{Ukkonen1995}\\
 For this thesis the algorithm has been expanded to work on any arbitrary datastructure. The simple observation behind this is that a string is just a list of characters. When building the suffix tree this list gets traversed from left to right and each element is added by following one of three rules:
 \begin{enumerate}
@@ -64,30 +66,47 @@ For this thesis the algorithm has been expanded to work on any arbitrary datastr
 This property of the algorithm has been used to extend it to a generic version of it by allowing any list of data. The only mandatory property the data structure must provide is an equality function that can be evaluated in linear time to keep the linear time property of the algorithm. Therefore a function has been implemented that calculates a hash value of the data structure and performs a simple \textit{integer - integer} comparison that keeps the linear time property.\\
 Figure~\ref{fig:suffixTreeConstructionImplicit} illustrates the implicit suffix tree on the sequence of clone chunks representing the list of words \textit{Do not modify \dots Do not modify}. After adding a sentinel at the end of the list the suffix tree becomes explicit, which is used in this thesis and shown in Figure~\ref{fig:suffixTreeConstructionExplicit}.\\
 For a deeper insight into the details of the algorithm for suffix tree construction see \cite{Ukkonen1995}. 
-\annotation{Weiß nicht wo der Whitespace her kommt?!}
-\input{figures/SuffixTreeConstruction/implicit.tex}
-\input{figures/SuffixTreeConstruction/explicit.tex}
-
 \section{Find clones}
-To find duplicate sequences in the suffix tree a variety of tree search algorithms can be applied. They are all based on the observation that the clones are represented by the paths in the suffix tree containing the searched sequence. Listing~\ref{lst:cloneBFS} can be used to perform a breadth first search to find clones.
-\input{listings/findClones.tex}
-When the graph search is performed the clone classes get returned as a \code{List} whereas each entry represents a \code{CloneClass}. Each \code{CloneClass} itself is a \code{List} of \code{List} of clone chunks. Each inner \code{List} of the \code{CloneClass} represents a clone instance. The clones consist of a \code{List} of clone chunks which have the additional information added to the string representation as shown in Listing~\ref{lst:cloneClass}. So every clone that is represented by the \code{List} named \textit{members} can be associated to the file it originated from, what will become important in the next steps.
-\input{listings/cloneClass.tex}
+To find duplicate sequences in the suffix tree a variety of tree search algorithms can be applied. They are all based on the observation that the clones are represented by the paths in the suffix tree containing the searched sequence. Listing~\ref{lst:cloneBFS} can be used to perform a breadth first search to find clones.\\
+When the graph search is performed the clone classes get returned as a \code{List} whereas each entry represents a \code{CloneClass}. Each \code{CloneClass} itself is a \code{List} of \code{List} of clone chunks. Each inner \code{List} of the \code{CloneClass} represents a clone instance. The clones consist of a \code{List} of clone chunks which have the additional information added to the string representation as shown in Listing~\ref{lst:cloneClass}. So every clone that is represented by the \code{List} named \textit{members} can be associated to the file it originated from, what will become important in the next steps.\\
 This \code{List} of clone chunks gets now converted into a \code{List} of \code{CloneResult}. A \code{CloneResult} is a more compact and convenient representation of the clone classes. Each has the text it represents as its \textit{name} and a \code{List} of all occurrences associated, whereas a occurrence is a \code{Pair} representing the \texttt{originID} and the \texttt{line number}. 
+\input{listings/findClones.tex}
+\input{listings/cloneClass.tex}
 \input{listings/cloneResult.tex}
 
-\section{Filter possibly generated clone results}
-As one of the last steps the clone results get filtered so that possibly generated ones can easily be distinguished from the ones that are unlikely to be generated. This step is only to improve and speed up the later by hand performed search for generator patterns in the found clones.\\
+\section{Filter possibly generated CloneResults}
+In this steps the \code{CloneResult}s get filtered so that possibly generated ones can easily be distinguished from the ones that are unlikely to be generated. This step is only to improve and speed up the later by hand performed search for generator patterns in the found clones.\\
 As stated in \cite{Bernwieser2014} most generator patterns will include the word \textit{generated}. From this observation a filter pattern has been derived and extended which is shown in Listing~\ref{lst:generatorPattern}. With this pattern the \code{List} of \code{CloneResult} gets filtered by their names.
 \input{listings/generatorPattern.tex}
 
-\section{Accumulation of results}
+\section{Accumulation of CloneResults}
+Due to the fact that the clone detection on suffix trees can only settle on a minimum clone length, but not on a maximum length, an accumulation is done.\\
+As seen in Listing~\ref{lst:beforeAccumulation} the name of the first \code{CloneResult} is a substring of the names of the other two. We suspect that the sets of occurrences of the \code{CloneResult}s do overlap in this case, which is can easily be seen in Listing~\ref{lst:beforeAccumulation}. So to speed up and remove redundant data only the \code{CloneResult} with the shortest name length is kept and the sets of occurrences from all \code{CloneResult}s that include the name as a substring get merged into that \code{CloneResult}.\\
+As it can easily be seen in Listing~\ref{lst:afterAccumulation} the amount of data stored is drastically reduced what speeds up processing later on.
+\input{listings/beforeAccumulation.tex}
+\input{listings/afterAccumulation.tex}
 
 \section{Generate links to the files}
-\annotation{Raus und dafür deep copy rein + repository save}
-The last step that is performed by the tool written for this thesis is to generate links to the files where the clones originated from. To do so two folders are created, one holding the possibly generated clone classes and one that holds the ones that are unlikely to be generated.\\
-Within these folders are again folders created that are named by the number of occurrences of the including clone classes.\\
-For each clone class is now again a folder created that is named as the clone class, within which links are created to the files where the clone classes originated from and its respective line number.
+The last step performed by the tool is to save the \code{CloneResult}s to be further processed. This gets done in three separate steps:
+\begin{enumerate}
+	\item Save as repository
+		\subitem A \code{Java} class is generated that holds a \code{List} of \code{Strings} in which a human readable version of the presumable generator pattern is saved together with a escaped version that can be used in regex search for later usage as the generator pattern repository.
+	\item Save as files
+		\subitem The exact folder structure of the original projects is saved, but removing all files that do not contain the presumable generator patterns. In these newly created projects one can easily review the found occurrences and check for the algorithms reliability. Additionally, a plain \code{XML} list of all presumable generated files is saved.
+	\item Save as links
+		\subitem For each generator pattern a folder is created that contains links to all files that include the pattern.
+\end{enumerate} 
 
-\section{Generation of a Generator-Pattern Repository}
+\section{Creation of a Generator-Pattern Repository}
+When the tool is finished and the raw data is saved it needs to be reviewed by hand. The created links and files are viewed and checked if the proposed generator pattern is in deed an indicator for the file being generated. 
+\input{tables/generatorPatternRepository.tex}
+
+
+
+
+
+
+
+
+
 
