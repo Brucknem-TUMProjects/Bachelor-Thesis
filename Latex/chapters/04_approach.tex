@@ -2,7 +2,7 @@
 % Add the above to each chapter to make compiling the PDF easier in some editors.
 
 \chapter{Approach}\label{chapter:approach}
-One aim of this thesis is the prototypical implementation of heuristics to detect generated code which uses techniques of clone detection on the comments that are extracted from the source code. A list of patterns that detect generated code of several code generators is derived by means of the comments. Following, a generator pattern repository has been created. This repository is to provide a database of code generators and their respective characteristic generator pattern which identifies the source code containing it as generated.\\
+One aim of this thesis is the prototypical implementation of heuristics to detect generated code which uses techniques of clone-detection on the comments that are extracted from the source code. A list of patterns that detect generated code of several code generators is derived based on comments in source code and we created a generator-pattern repository. This repository provides a database of code generators and their respective characteristic generator pattern which identifies the the generated source code.\\
 We use a teamscale server to perform the basic analysis tasks on the specified projects.
 \section{Use Teamscale as Lexer to extract Tokens}
 The first step in the approach used in this paper is the lexical analysis of the source code included in the projects. Teamscale comes with a multitude of lexers applicable for many different programming languages. The general workflow in this step is reading each source code file found in the project, perform the lexical analysis and tokenize the source code file into a sequence of logically coherent tokens representing the source code on a logical level. The tokens are saved server-side in the Teamscale instance.
@@ -14,75 +14,61 @@ In the second step the tool written for this thesis connects to the Teamscale in
 This has to be done in the following steps:
 \begin{enumerate}
 	\item Get the projects that are currently available in the Teamscale instance. 
-	\item For each project retrieve the respective uniform path to access the source code files on the server.
+	\item For each project retrieve the respective uniform paths\footnote{A uniform path is the path the Teamscale instance uses to represent the source code file. The URL to access the file on the server can be build using it.} to access the source code files on the server.
 	\item For each uniform path retrieve the comments that are included in the respective source code file. In this step the server filters all tokens that are available for each file. The only important token class is the \textit{COMMENT} class, which itself contains the sub-classes shown in Table \ref{table:commentTypes}.
 	\item The local file path of every source code file is retrieved from the server based on the uniform path. This will get important later in the evaluation.
-	\item Each local file path gets associated to the respective list of comments.
+	\item Each local file path gets associated to the respective \code{List} of comments.
 \end{enumerate}
-
 \input{figures/connectAndRetrieveCommentsFlow.tex}
+\threaded{Retrieving the comments}
 \input{tables/commentTypes.tex}
 
-\section{Prepare comments for suffix tree clone detection}
-Once the comments are received from the Teamscale server instance they have to get prepared to be usable in the suffix tree clone detection as introduced by Esko Ukkonen \cite{Ukkonen1995}\cite{Ukkonen1993}.\\
+\section{Prepare comments for suffix-tree clone-detection}
+Once the comments are received from the Teamscale server instance they have to get prepared to be usable in the suffix-tree clone-detection as introduced by Esko~Ukkonen~\cite{Ukkonen1995}\cite{Ukkonen1993}.
+
 \subsection{Create thread for each source code file}
-The step \ref{section:retrieveComments} produces a \code{Map} in which every local path to a source code file is associated with its respective list of comments.
-In the first part of the preparation one thread is generated for each source code file respective local file path. These threads will be responsible for the preparation of each single file and the results will be merged at the end.
+The step described in Section~\ref{section:retrieveComments} produces a \code{Map} in which every local path to a source code file is associated with its respective \code{List} of comments.
+In the first part of the preparation one thread is generated for each source code file respective local file path. These threads will be responsible for the preparation of each single file and the results will be merged at the end.\\
+\threaded{This process}
 
-%\subsection{Remove unnecessary characters and whitespaces}
-%At first the comments are split at the linebreaks into single lines and leading and trailing whitespaces of each line are removed.\\
-%Susequent the comment enclosings are removed using a regular expression on every line to remove the language specific identifiers of comments. This regular expression is build from a list of regular expressions that represent the specific comment enclosings in the respective language.\\ 
-%These are concatenated with the \textit{OR}-operator to generate a generic regular expression for most programming language supported by Teamscale (\ref{section:teamscale}). Following this step the the leading and trailing whitespaces are removed again.\\
-%An overview of the regular expressions that are used in this step are shown in table \ref{table:commentEnclosings}.
-%\input{tables/commentEnclosings.tex}
-%
-%\subsection{Convert words into clone chunks}
-%The resulting lines of the previous step are again split into single words. Every word is at first checked if it holds valuable information for the approach. To check the value of each word it gets checked if it contains alphabetic letters \textit{(a-z, A-Z)} or digits. If a word only consists of nonalphabetic and no digits it gets sorted out \textit{(e.g. "-{}-{}-{}-{}-{}-{}-{}-")}.\\
-%The remaining words that bring a value to the approach are now converted into clone chunks. Therefore is added to every word the type of the comment, the offset and the linenumber of the comment and the local file path the comment originated from.\\
-%For an overview over these properties of a comment see \ref{section:token}.
-
-\subsection{Convert comments into clone chunks}
+\subsection{Convert comments into CloneChunks}
 At first the comments are split at the linebreaks into single lines and leading and trailing whitespaces of each line are removed. The resulting lines are in turn split at the whitespaces separating single words and expressions.\\
-The list of words gets now iterated and every word gets checked if it holds any valuable information. To evaluate the value of each word it is checked if it contains alphabetic letters \textit{(a-z, A-Z)} or digits. If a word only consists of nonalphabetic characters and no digits it gets sorted out \textit{(e.g. "-{}-{}-{}-{}-{}-{}-{}-", "/**", "<!--")}.\\
-The remaining words that bring a value to the approach are now converted into clone chunks. Therefore is added to every word the type of the comment, the offset and the linenumber of the comment and the local file path the comment originated from.\\
+The \code{List} of words gets now iterated and every word gets checked if it holds any valuable information. To evaluate the value of each word it is checked if it contains alphabetic letters \textit{(a-z, A-Z)} or digits. If a word only consists of nonalphabetic characters and no digits it gets sorted out \textit{(e.g. "-{}-{}-{}-{}-{}-{}-{}-", "/**", "<!--")}.\\
+The remaining words that bring a value to the approach are now converted into \code{CloneChunk}s. Therefore is added to every word the type of the comment, the offset and the line number of the comment and the local file path the comment originated from.\\
 For an overview over these properties of a comment see \ref{section:token}.
 
 \subsection{Add sentinels}
-To prevent the suffix tree clone detection algorithm from intermixing the comments a sentinel gets added at the end of the list of clone chunks resulting from the previous steps. This is necessary due to the fact that the algorithm works an a single list of clone chunks that is build from merging all clone chunks from every comment.
+To prevent the suffix-tree clone-detection algorithm from intermixing the comments a sentinel~[\ref{section:sentinel}] gets added at the end of the \code{List} of \code{CloneChunk}s resulting from the previous steps. This is necessary due to the fact that the algorithm works an a single \code{List} of \code{CloneChunk}s that is build from merging all \code{CloneChunk}s from every comment.
 
 \subsection{Merge thread results}
-Once all threads are finished, resulting in all comments being converted into lists of clone chunks and sentinels being added to the end of each list, all lists get concatenated into one hugh list containing all words of the comments. On this list the suffix tree clone detection algorithm can now be applied.
+Once all threads are finished, resulting in all comments being converted into \code{List}s of \code{CloneChunk}s and sentinels being added to the end of each \code{List}, all \code{List}s get concatenated into one huge \code{List} containing all words of all comments from all projects. On this \code{List} the suffix-tree clone-detection algorithm can now be applied.
 
-\section{Build suffix tree}
+\section{Build suffix-tree}
+Esko Ukkonen introduced an algorithm to construct suffix-trees on strings in his paper for \textit{Algorithmica} in 1995 \cite{Ukkonen1995}. "A suffix-tree is a trie-like structure representing all suffixes of a string. [\dots] The new algorithm [\dots] processes the string symbol by symbol from left to right [\dots]. The algorithm is based on the simple observation that the suffixes of a string $T^i = t_1 \dots t_i$ can be obtained from the suffixes of string $T^{i-1} = t_1 \dots t_{i-1}$ by catenating symbol $t_i$ at the end of each suffix of $T^{i-1}$ and by adding the empty suffix."~\cite{Ukkonen1995}\\
+For this thesis the algorithm has been expanded to work on \code{List}s of arbitrary data types. The simple observation that lead to the expansion of the algorithm is that a string is just a \code{List} of characters. When building the suffix-tree this \code{List} gets traversed from left to right and each \code{CloneChunk} is added and the suffix-tree is expanded.\\
+We used this property of the algorithm to extend it to a generic version of it by allowing \code{List}s of any data types. The only mandatory property the data type must provide is an equality function that can be evaluated in linear time to keep the linear time property of the algorithm. We implemented a function that calculates a hash value of the data structure and performs a simple \textit{integer - integer} comparison that keeps the linear time property.\\
+Figure~\ref{fig:suffixTreeConstructionImplicit} illustrates the implicit suffix-tree on the sequence of \code{CloneChunk}s representing the \code{List} of words \textit{Do not modify \dots Do not modify}. After adding a sentinel at the end of the \code{List} the suffix-tree becomes explicit, which is used in this thesis and shown in Figure~\ref{fig:suffixTreeConstructionExplicit}.\\
+For a deeper insight into the details of the algorithm for suffix-tree construction see \cite{Ukkonen1995}. 
 \input{figures/SuffixTreeConstruction/implicit.tex}
 \input{figures/SuffixTreeConstruction/explicit.tex}
-Esko Ukkonen introduced an algorithm to construct suffix trees on strings in his paper for \textit{Algorithmica} in 1995 \cite{Ukkonen1995}. A suffix tree is a trie-like structure representing all suffixes of a string. To construct it a string gets processed symbol by symbol from the start to the end. The construction is based on the observation is that the suffixes of $T^i = t_1 \dots t_i$ can be obtained from catenating $t_i$ to the end of each suffix of $T^{i-1} = t_1 \dots t_{i-1}$. \cite{Ukkonen1995}\\
-For this thesis the algorithm has been expanded to work on any arbitrary datastructure. The simple observation behind this is that a string is just a list of characters. When building the suffix tree this list gets traversed from left to right and each element is added by following one of three rules:
-\begin{enumerate}
-	\item Walk all paths and add the new element.
-	\item If a path does not exists, add it.
-	\item If a path already exists, do nothing.
-\end{enumerate}
-This property of the algorithm has been used to extend it to a generic version of it by allowing any list of data. The only mandatory property the data structure must provide is an equality function that can be evaluated in linear time to keep the linear time property of the algorithm. Therefore a function has been implemented that calculates a hash value of the data structure and performs a simple \textit{integer - integer} comparison that keeps the linear time property.\\
-Figure~\ref{fig:suffixTreeConstructionImplicit} illustrates the implicit suffix tree on the sequence of clone chunks representing the list of words \textit{Do not modify \dots Do not modify}. After adding a sentinel at the end of the list the suffix tree becomes explicit, which is used in this thesis and shown in Figure~\ref{fig:suffixTreeConstructionExplicit}.\\
-For a deeper insight into the details of the algorithm for suffix tree construction see \cite{Ukkonen1995}. 
+
 \section{Find clones}
-To find duplicate sequences in the suffix tree a variety of tree search algorithms can be applied. They are all based on the observation that the clones are represented by the paths in the suffix tree containing the searched sequence. Listing~\ref{lst:cloneBFS} can be used to perform a breadth first search to find clones.\\
-When the graph search is performed the clone classes get returned as a \code{List} whereas each entry represents a \code{CloneClass}. Each \code{CloneClass} itself is a \code{List} of \code{List} of clone chunks. Each inner \code{List} of the \code{CloneClass} represents a clone instance. The clones consist of a \code{List} of clone chunks which have the additional information added to the string representation as shown in Listing~\ref{lst:cloneClass}. So every clone that is represented by the \code{List} named \textit{members} can be associated to the file it originated from, what will become important in the next steps.\\
-This \code{List} of clone chunks gets now converted into a \code{List} of \code{CloneResult}. A \code{CloneResult} is a more compact and convenient representation of the clone classes. Each has the text it represents as its \textit{name} and a \code{List} of all occurrences associated, whereas a occurrence is a \code{Pair} representing the \texttt{originID} and the \texttt{line number}. 
+To find duplicate sequences in the suffix-tree, a variety of tree search algorithms can be applied. They are all based on the observation that the clones are represented by the paths in the suffix-tree containing the searched sequence. Listing~\ref{lst:cloneBFS} can be used to perform a breadth first search to find clones.\\
+When the graph search is performed the clone classes get returned as a \code{List} whereas each entry represents a \code{CloneClass}. Each \code{CloneClass} itself is a \code{List} of \code{List} of \code{CloneChunk}s. Each inner \code{List} of the \code{CloneClass} represents a clone instance. The clones consist of a \code{List} of \code{CloneChunk}s which have the additional information added to the string representation as shown in Listing~\ref{lst:cloneClass}. So every clone that is represented by the \code{List} named \textit{members} can be associated to the file it originated from. This will become important in the next steps.\\
+This \code{List} of \code{CloneChunk}s gets now converted into a \code{List} of \code{CloneResult}. A \code{CloneResult} is a more compact and convenient representation of the clone classes. Each has the text it represents as its \textit{name} and a \code{List} of all occurrences associated, whereas a occurrence is a \code{Pair} representing the \texttt{originID} (file identifier) and the \texttt{line number}. \threaded{The conversion}
 \input{listings/findClones.tex}
 \input{listings/cloneClass.tex}
 \input{listings/cloneResult.tex}
 
 \section{Filter possibly generated CloneResults}
-In this steps the \code{CloneResult}s get filtered so that possibly generated ones can easily be distinguished from the ones that are unlikely to be generated. This step is only to improve and speed up the later by hand performed search for generator patterns in the found clones.\\
+In this steps the \code{CloneResult}s get filtered so that possibly generated ones can easily be distinguished from the ones that are unlikely to be generated. This step is only to improve and speed up the manual search for generator patterns in the found clones performed later.\\
 As stated in \cite{Bernwieser2014} most generator patterns will include the word \textit{generated}. From this observation a filter pattern has been derived and extended which is shown in Listing~\ref{lst:generatorPattern}. With this pattern the \code{List} of \code{CloneResult} gets filtered by their names.
 \input{listings/generatorPattern.tex}
 
 \section{Accumulation of CloneResults}
-Due to the fact that the clone detection on suffix trees can only settle on a minimum clone length, but not on a maximum length, an accumulation is done.\\
-As seen in Listing~\ref{lst:beforeAccumulation} the name of the first \code{CloneResult} is a substring of the names of the other two. We suspect that the sets of occurrences of the \code{CloneResult}s do overlap in this case, which is can easily be seen in Listing~\ref{lst:beforeAccumulation}. So to speed up and remove redundant data only the \code{CloneResult} with the shortest name length is kept and the sets of occurrences from all \code{CloneResult}s that include the name as a substring get merged into that \code{CloneResult}.\\
-As it can easily be seen in Listing~\ref{lst:afterAccumulation} the amount of data stored is drastically reduced what speeds up processing later on.
+Due to the fact that the clone-detection on suffix-trees can only settle on a minimum clone length, but not on a maximum length, an accumulation is done.\\
+As seen in Listing~\ref{lst:beforeAccumulation} the name of the first \code{CloneResult} is a substring of the names of the other two. We suspect that the sets of occurrences of the \code{CloneResult}s do overlap in this case, which is illustrated in Listing~\ref{lst:beforeAccumulation}. So to speed up and remove redundant data only the \code{CloneResult} with the shortest name length is kept and the sets of occurrences from all \code{CloneResult}s that include the name as a substring get merged into that \code{CloneResult}.\\
+As illustrated in Listing~\ref{lst:afterAccumulation}, the amount of data stored is drastically reduced what speeds up processing later on.
 \input{listings/beforeAccumulation.tex}
 \input{listings/afterAccumulation.tex}
 
@@ -96,9 +82,10 @@ The last step performed by the tool is to save the \code{CloneResult}s to be fur
 	\item Save as links
 		\subitem For each generator pattern a folder is created that contains links to all files that include the pattern.
 \end{enumerate} 
+\threaded{Save as files and as links}
 
 \section{Creation of a Generator-Pattern Repository}
-When the tool is finished and the raw data is saved it needs to be reviewed by hand. The created links and files are viewed and checked if the proposed generator pattern is in deed an indicator for the file being generated. 
+When the tool is finished and the raw data is saved it needs to be reviewed by hand. The created links and files are viewed and checked whether the proposed generator pattern is indeed an indicator for the file being generated. 
 \input{tables/generatorPatternRepository.tex}
 
 

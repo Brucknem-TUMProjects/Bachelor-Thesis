@@ -1,54 +1,52 @@
 % !TeX root = ../../main.tex
 % Add the above to each chapter to make compiling the PDF easier in some editors.
 \setlength{\extrarowheight}{-1em}
-\begin{center}	
-	\begin{figure}	
-		\centering
-		\begin{tikzpicture}[
-		scale = 1, transform shape, thick, TUMLightGray,
-		every node/.style = {draw, TUMBlue, circle, minimum size = 1mm},
-		grow = down,  % alignment of characters
-		level 1/.style = {sibling distance=3cm},
-		level 2/.style = {sibling distance=2cm}, 
-		level 3/.style = {sibling distance=2cm}, 
-		level distance = 5cm
-		]
-		
-		\node[](Root){}
-		child{node (S){}}
-		child{node (Do not modify){}
-			child{node (x Do not modify S 1){}}
-			child{node (S 1){}}
-		}
-		child{node (not modify){}
-			child{node (x Do not modify S 2){}}
-			child{node (S 2){}}
-		}
-		child{node (modify){}
-			child{node (x Do not modify S 3){}}
-			child{node (S 3){}}
-		}
-		child{node (x Do not modify S){}}
-		;
-		
-		% Labels
-		\begin{scope}[nodes = {Black, draw = none, sloped, anchor=center, below}]
-		\path (Root) -- (Do not modify) node [near start, left] {Do not modify};
-		\path (Do not modify) -- (x Do not modify S 1) node [near start, left] {... Do not modify \$};
-		\path (Do not modify) -- (S 1) node [near end, right] {\$};		
-		\path (Root) -- (not modify) node [near start, right] {not modify};
-		\path (not modify) -- (x Do not modify S 2) node [near start, left] {... Do not modify \$};
-		\path (not modify) -- (S 2) node [near end, right] {\$};		
-		\path (Root) -- (modify) node [near start, right] {modify};
-		\path (modify) -- (x Do not modify S 3) node [near start, left] {... Do not modify \$};
-		\path (modify) -- (S 3) node [near end, right] {\$};		
-		\path (Root) -- (x Do not modify S) node [near start, right] {... Do not modify \$};
-		\path (Root) -- (S) node [near end, right] {\$};				
-		\end{scope}
-			
-		\end{tikzpicture}
-		\caption{The explicit suffix tree for the list of words "Do not modify \dots Do not modify". }
-		\label{fig:suffixTreeConstructionExplicit}
-	\end{figure}
-\end{center}
+\begin{figure}	
+\centering
+\begin{tikzpicture}[
+scale = 1, transform shape, thick, TUMLightGray,
+every node/.style = {draw, TUMBlue, circle, minimum size = 1mm},
+grow = down,  % alignment of characters
+level 1/.style = {sibling distance=3cm},
+level 2/.style = {sibling distance=2cm}, 
+level 3/.style = {sibling distance=2cm}, 
+level distance = 5cm
+]
+
+\node[](Root){}
+child{node (S){}}
+child{node (Do not modify){}
+	child{node (x Do not modify S 1){}}
+	child{node (S 1){}}
+}
+child{node (not modify){}
+	child{node (x Do not modify S 2){}}
+	child{node (S 2){}}
+}
+child{node (modify){}
+	child{node (x Do not modify S 3){}}
+	child{node (S 3){}}
+}
+child{node (x Do not modify S){}}
+;
+
+% Labels
+\begin{scope}[nodes = {Black, draw = none, sloped, anchor=center, below}]
+\path (Root) -- (Do not modify) node [near start, left] {Do not modify};
+\path (Do not modify) -- (x Do not modify S 1) node [near start, left] {... Do not modify \$};
+\path (Do not modify) -- (S 1) node [near end, right] {\$};		
+\path (Root) -- (not modify) node [near start, right] {not modify};
+\path (not modify) -- (x Do not modify S 2) node [near start, left] {... Do not modify \$};
+\path (not modify) -- (S 2) node [near end, right] {\$};		
+\path (Root) -- (modify) node [near start, right] {modify};
+\path (modify) -- (x Do not modify S 3) node [near start, left] {... Do not modify \$};
+\path (modify) -- (S 3) node [near end, right] {\$};		
+\path (Root) -- (x Do not modify S) node [near start, right] {... Do not modify \$};
+\path (Root) -- (S) node [near end, right] {\$};				
+\end{scope}
+	
+\end{tikzpicture}
+\caption{The explicit suffix tree for the list of words "Do not modify \dots Do not modify". }
+\label{fig:suffixTreeConstructionExplicit}
+\end{figure}
 \setlength{\extrarowheight}{0em}

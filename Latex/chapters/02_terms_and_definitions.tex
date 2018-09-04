@@ -21,14 +21,15 @@ The \textit{generator pattern repository} is one aim of this thesis. It is a dat
 We refer to \textit{clones} in the context of this thesis as text fragments that have two or more instances in comments. This includes whole comments that are identical in different source code files as well as parts of comments. The original and the duplicated fragment build a clone pair \cite{Roy2007}. 
 
 \subsection{Clone chunk}
-For the use in Ukkonens algorithm for the construction of a suffix tree \cite{Ukkonen1995} the text of the comments has to be normalized in \textit{clone chunks}. The suffix tree clone detection approach uses a sequence of clone chunks and constructs the tree on them. To be suitable each comment is split in separate words, whereas additional information gets appended to each word that will later on be used to identify the location of the word in the original comment. This information includes the uniform path to the original source code file, the line number in which the word originated and the programming language.
+For the use in Ukkonens algorithm for the construction of a suffix-tree \cite{Ukkonen1995} the text of the comments has to be normalized in \textit{clone chunks}. The suffix-tree clone-detection approach uses a sequence of clone chunks and constructs the tree on them. To be suitable each comment is split in separate words, whereas additional information gets appended to each word that will later on be used to identify the location of the word in the original comment. This information includes the uniform path to the original source code file, the line number in which the word originated and the programming language.
 
 \subsection{Sentinel}
-A boolean comparison for equality of a sentinel and another object will always evaluate to false. It is used on the one site to separate coherent sequences of clone chunks from each other, and on the other hand to convert an implicit suffix tree into an explicit one. A \textit{sentinel} is a subclass of the \textit{clone chunk} class. 
+\label{section:sentinel}
+A boolean comparison for equality of a sentinel and another object will always evaluate to false. It is used on the one site to separate coherent sequences of clone chunks from each other, and on the other hand to convert an implicit suffix-tree into an explicit one. A \textit{sentinel} is a subclass of the \textit{clone chunk} class. 
 
 \subsection{Clone class}
 A \textit{clone class} is the maximal set of comments in which any two of the comments form a \textit{clone pair}.
-Table \ref{table:cloneClass} depicts an example of the appearance of 3
+Table~\ref{table:cloneClass} depicts an example of the appearance of 3
 clone classes.
 \input{tables/clonePair_cloneClass.tex}
 
@@ -54,10 +55,10 @@ and the extendibility of a software. It defines the probability that an arbitrar
 \textit{Teamscale} is developed by the CQSE GmbH which was founded in 2009 as spin-off of Technical University Munich (TUM). They offer innovative consulting and products to help their customers evaluate, control and improve their software quality. \\
 Their main product is Teamscale which is a tool to analyze the quality of code with a variety of static code analyses. It helps to monitor the quality of code over time and is personally configurable to allow users to focus on personal quality goals and keep an eye on the current quality trend.\\
 The supported programming languages of Teamscale are \textit{ABAP, Groovy, Matlab, Simulink/StateFlow, Ada, Gosu, Open CL, SQLScript, C\#, IEC 61131-3 ST, OScript, Swift, C/C++, Java, PHP, TypeScript, Cobol, JavaScript, PL/SQL, Visual Basic .NET, Delphi, Kotlin, Python, Xtend, Fortran, Magik} and \textit{Rust}.\\
-One major aspect in the quality analysis performed by Teamscale is the \textit{Clone Detection}. With it duplicated code created by copy \& paste can be found automatically.
+One major aspect in the quality analysis performed by Teamscale is the \textit{clone-detection}. With it duplicated code created by copy \& paste can be found automatically.
 
-\subsection{Suffix Tree Clone Detection}
-In \cite{Ukkonen1995}, an on-line algorithm is presented for constructing the suffix tree for a given string in time linear in the length of the string. Based on this data structure a string-matching algorithm is presented in \cite{Ukkonen1993}. These two algorithms have been extended to be usable in this thesis to detect clones among comments in source code.
+\subsection{suffix-tree clone-detection}
+In \cite{Ukkonen1995}, an on-line algorithm is presented for constructing the suffix-tree for a given string in time linear in the length of the string. Based on this data structure a string-matching algorithm is presented in \cite{Ukkonen1993}. These two algorithms have been extended to be usable in this thesis to detect clones among comments in source code.
 
 \subsection{Lexer}
 A tokenizer, also called lexical scanner (short: \textit{Lexer}) is a programm that splits plain text in a sequence of logical concatenated units, so called tokens. The plain text tokenized by the lexer can be anything, but we will restrict it to source code. Teamscale includes a variety of lexers for every supported programming language. 

@@ -1,10 +1,9 @@
 % !TeX root = ../../main.tex
 % Add the above to each chapter to make compiling the PDF easier in some editors.
 \setlength{\extrarowheight}{-10em}
-\begin{center}
-	\begin{figure}	
-		\centering
-		\begin{tikzpicture}[
+\begin{figure}	
+	\centering
+	\begin{tikzpicture}[
 		scale = 1, transform shape, thick, TUMLightGray,
 		every node/.style = {draw, TUMBlue, circle, minimum size = 1mm},
 		grow = down,  % alignment of characters
@@ -28,9 +27,8 @@
 		\path (Root) -- (modify) node [near start, right] {modify \dots Do not modify};		
 		\path (Root) -- (E) node [near start, right] { \dots Do not modify};				
 		\end{scope}			
-		\end{tikzpicture}
-		\caption{The implicit suffix tree for the list of words "Do not modify \dots Do not modify". }
-		\label{fig:suffixTreeConstructionImplicit}
-	\end{figure}
-\end{center}
+	\end{tikzpicture}
+	\caption{The implicit suffix tree for the list of words "Do not modify \dots Do not modify". }
+	\label{fig:suffixTreeConstructionImplicit}
+\end{figure}
 \setlength{\extrarowheight}{0em}
