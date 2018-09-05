@@ -80,12 +80,19 @@ The last step performed by the tool is to save the \code{CloneResult}s to be fur
 	\item Save as files
 		\subitem The exact folder structure of the original projects is saved, but removing all files that do not contain the presumable generator patterns. In these newly created projects one can easily review the found occurrences and check for the algorithms reliability. Additionally, a plain \code{XML} list of all presumable generated files is saved.
 	\item Save as links
-		\subitem For each generator pattern a folder is created that contains links to all files that include the pattern.
+		\subitem The \code{CloneResult}s are sorted by their number of occurrences and for each number a folder is created. Within these folders, we created subfolders labeled by the name of the included possible generator pattern. In these subfolders, links to all files containing the generator pattern are created.
 \end{enumerate} 
 \threaded{Save as files and as links}
 
 \section{Creation of a Generator-Pattern Repository}
-When the tool is finished and the raw data is saved it needs to be reviewed by hand. The created links and files are viewed and checked whether the proposed generator pattern is indeed an indicator for the file being generated. 
+When the tool is finished and the raw data is saved it needs to be reviewed by hand. \\
+We searched the folders including the links to the generator patterns (sorted by their number of occurrences) in descending order due to the fact that a high number of occurrences implies many repetitions of the comment, which is a possible sign of it being generated.\\
+By looking at the comments including the found presumable generator patterns we found a variety of different generator patterns. Table~\ref{table:generatorPatternRepository} shows an excerpt of the actual generator-pattern repository associated to their respective generator.\\
+As stated in \cite{Bernwieser2014}, the word \textit{generate} used to filter the \code{CloneResult}s is not a sufficient criterion to decide whether a source code file is generated. Due to this fact the algorithm produces many false positives and patterns that use the word \textit{generated}, but in the context that it describes that the following function or class generates something, rather than being generated itself. \\
+We reviewed the presumable generator-patterns and quickly found multiple comments that mark the source code file as generated. These were collected in the Generator-Pattern Repository.\\
+Based on the repository we could iteratively find more patterns. To do so we repeated all steps described in the approach, but checked the source code files directly after retrieving them from the Teamscale instance. The source code files containing one or multiple of the generator-patterns were sorted out, so the suffix-tree clone-detection has been performed on a shrinking set of source code files containing less generated code in every iteration.\\
+We repeated searching for generator-patterns and adding them to the repository and the suffix-tree clone-detection until no generator-patterns were left.
+
 \input{tables/generatorPatternRepository.tex}
 
 
