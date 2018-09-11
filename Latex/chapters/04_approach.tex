@@ -24,12 +24,12 @@ This has to be done in the following steps:
 \input{tables/commentTypes.tex}
 
 \section{Prepare comments for suffix-tree clone-detection}
-Once the comments are received from the Teamscale server instance they have to get prepared to be usable in the suffix-tree clone-detection as introduced by Esko~Ukkonen~\cite{Ukkonen1995}\cite{Ukkonen1993}.
+Once the comments are received from the Teamscale server instance they have to get prepared to be usable in the suffix-tree clone-detection as introduced by Esko~Ukkonen~\cite{Ukkonen1995}\cite{Ukkonen1993}.\\
+\threaded{The preparation}
 
 \subsection{Create thread for each source code file}
 The step described in Section~\ref{section:retrieveComments} produces a \code{Map} in which every local path to a source code file is associated with its respective \code{List} of comments.
-In the first part of the preparation one thread is generated for each source code file respective local file path. These threads will be responsible for the preparation of each single file and the results will be merged at the end.\\
-\threaded{This process}
+In the first part of the preparation one thread is generated for each source code file respective local file path. These threads will be responsible for the preparation of each single file and the results will be merged at the end.
 
 \subsection{Convert comments into CloneChunks}
 At first the comments are split at the linebreaks into single lines and leading and trailing whitespaces of each line are removed. The resulting lines are in turn split at the whitespaces separating single words and expressions.\\
@@ -53,6 +53,7 @@ For a deeper insight into the details of the algorithm for suffix-tree construct
 \input{figures/SuffixTreeConstruction/explicit.tex}
 
 \section{Find clones}
+\label{section:findClones}
 To find duplicate sequences in the suffix-tree, a variety of tree search algorithms can be applied. They are all based on the observation that the clones are represented by the paths in the suffix-tree containing the searched sequence. Listing~\ref{lst:cloneBFS} can be used to perform a breadth first search to find clones.\\
 When the graph search is performed the clone classes get returned as a \code{List} whereas each entry represents a \code{CloneClass}. Each \code{CloneClass} itself is a \code{List} of \code{List} of \code{CloneChunk}s. Each inner \code{List} of the \code{CloneClass} represents a clone instance. The clones consist of a \code{List} of \code{CloneChunk}s which have the additional information added to the string representation as shown in Listing~\ref{lst:cloneClass}. So every clone that is represented by the \code{List} named \textit{members} can be associated to the file it originated from. This will become important in the next steps.\\
 This \code{List} of \code{CloneChunk}s gets now converted into a \code{List} of \code{CloneResult}. A \code{CloneResult} is a more compact and convenient representation of the clone classes. Each has the text it represents as its \textit{name} and a \code{List} of all occurrences associated, whereas a occurrence is a \code{Pair} representing the \texttt{originID} (file identifier) and the \texttt{line number}. \threaded{The conversion}
@@ -60,17 +61,25 @@ This \code{List} of \code{CloneChunk}s gets now converted into a \code{List} of 
 \input{listings/cloneClass.tex}
 \input{listings/cloneResult.tex}
 
-\section{Filter possibly generated CloneResults}
+\section{Reduce amount of not valuable data}
+\label{section:processCloneResults}
+The raw suffix-tree clone-detection produces a lot of false positive \code{CloneResult}s. This is due to the fact that the clone-detection cannot distinguish between common phrases and actual generator-patterns. To reduce the amount of not valuable and redundant data three steps are performed.
+\subsection{Filter possibly generated CloneResults}
 In this steps the \code{CloneResult}s get filtered so that possibly generated ones can easily be distinguished from the ones that are unlikely to be generated. This step is only to improve and speed up the manual search for generator patterns in the found clones performed later.\\
 As stated in \cite{Bernwieser2014} most generator patterns will include the word \textit{generated}. From this observation a filter pattern has been derived and extended which is shown in Listing~\ref{lst:generatorPattern}. With this pattern the \code{List} of \code{CloneResult} gets filtered by their names.
 \input{listings/generatorPattern.tex}
 
-\section{Accumulation of CloneResults}
+\subsection{Accumulation of CloneResults}
 Due to the fact that the clone-detection on suffix-trees can only settle on a minimum clone length, but not on a maximum length, an accumulation is done.\\
 As seen in Listing~\ref{lst:beforeAccumulation} the name of the first \code{CloneResult} is a substring of the names of the other two. We suspect that the sets of occurrences of the \code{CloneResult}s do overlap in this case, which is illustrated in Listing~\ref{lst:beforeAccumulation}. So to speed up and remove redundant data only the \code{CloneResult} with the shortest name length is kept and the sets of occurrences from all \code{CloneResult}s that include the name as a substring get merged into that \code{CloneResult}.\\
 As illustrated in Listing~\ref{lst:afterAccumulation}, the amount of data stored is drastically reduced what speeds up processing later on.
 \input{listings/beforeAccumulation.tex}
 \input{listings/afterAccumulation.tex}
+
+\subsection{Clustering of CloneResults}
+During the search for generator-patterns we realized that the generated files always have the same structure, resulting from the fact that generators mostly reuse the same templates that are only filled with user-dependent information.\\
+This results in the observation that most \code{CloneResult}s will have their occurrences always at the same line in the source code file, only having a small derivation coming from additional license headers or package declarations.\\
+To check whether the \code{CloneResult} is likely to be a generator-pattern we iterate over all occurrences to sort out the ones that only occur once in their respective line. Furthermore we added a threshold for the maximal distance between the occurrences of ten lines, what sorts out most of the common phrases and keeps all generator-patterns.
 
 \section{Generate links to the files}
 The last step performed by the tool is to save the \code{CloneResult}s to be further processed. This gets done in three separate steps:

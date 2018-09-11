@@ -21,7 +21,7 @@ The \textit{generator pattern repository} is one aim of this thesis. It is a dat
 We refer to \textit{clones} in the context of this thesis as text fragments that have two or more instances in comments. This includes whole comments that are identical in different source code files as well as parts of comments. The original and the duplicated fragment build a clone pair \cite{Roy2007}. 
 
 \subsection{Clone chunk}
-For the use in Ukkonens algorithm for the construction of a suffix-tree \cite{Ukkonen1995} the text of the comments has to be normalized in \textit{clone chunks}. The suffix-tree clone-detection approach uses a sequence of clone chunks and constructs the tree on them. To be suitable each comment is split in separate words, whereas additional information gets appended to each word that will later on be used to identify the location of the word in the original comment. This information includes the uniform path to the original source code file, the line number in which the word originated and the programming language.
+For the use in Ukkonens algorithm for the construction of a suffix-tree~\cite{Ukkonen1995} the text of the comments has to be normalized in \textit{clone chunks}. The suffix-tree clone-detection approach uses a sequence of clone chunks and constructs the tree on them. To be suitable each comment is split in separate words, whereas additional information gets appended to each word that will later on be used to identify the location of the word in the original comment. This information includes the uniform path to the original source code file, the line number in which the word originated and the programming language.
 
 \subsection{Sentinel}
 \label{section:sentinel}
