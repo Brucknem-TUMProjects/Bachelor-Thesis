@@ -71,6 +71,7 @@ As stated in \cite{Bernwieser2014} most generator patterns will include the word
 \input{listings/generatorPattern.tex}
 
 \subsection{Accumulation of CloneResults}
+\label{section:accumulation}
 Due to the fact that the clone-detection on suffix-trees can only settle on a minimum clone length, but not on a maximum length, an accumulation is done.\\
 As seen in Listing~\ref{lst:beforeAccumulation} the name of the first \code{CloneResult} is a substring of the names of the other two. We suspect that the sets of occurrences of the \code{CloneResult}s do overlap in this case, which is illustrated in Listing~\ref{lst:beforeAccumulation}. So to speed up and remove redundant data only the \code{CloneResult} with the shortest name length is kept and the sets of occurrences from all \code{CloneResult}s that include the name as a substring get merged into that \code{CloneResult}.\\
 As illustrated in Listing~\ref{lst:afterAccumulation}, the amount of data stored is drastically reduced what speeds up processing later on.
@@ -78,6 +79,7 @@ As illustrated in Listing~\ref{lst:afterAccumulation}, the amount of data stored
 \input{listings/afterAccumulation.tex}
 
 \subsection{Clustering of CloneResults}
+\label{section:clustering}
 During the search for generator-patterns we realized that the generated files always have the same structure, resulting from the fact that generators mostly reuse the same templates that are only filled with user-dependent information.\\
 This results in the observation that most \code{CloneResult}s will have their occurrences always at the same line in the source code file, only having a small derivation coming from additional license headers or package declarations.\\
 To check whether the \code{CloneResult} is likely to be a generator-pattern we iterate over all occurrences to sort out the ones that only occur once in their respective line. Furthermore we added a threshold for the maximal distance between the occurrences of ten lines, what sorts out most of the common phrases and keeps all generator-patterns.
