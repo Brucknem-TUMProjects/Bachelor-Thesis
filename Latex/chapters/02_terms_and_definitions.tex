@@ -5,12 +5,11 @@
 
 \section{Terminology}
 \subsection{Generated code}
-\copied
-As proposed in \cite{Alves2011} we consider \textit{generated code} all artifacts that are automatically created and modified by a tool using other artifacts as input. Common examples are parsers (generated from grammars), data access layers (generated from different models such as UML, database schemas or web-service specifications), mock objects or test code.
+As proposed in \cite{Alves2011} "we consider \textit{generated code} all artifacts that are automatically created and modified by a tool using other artifacts as input. Common examples are parsers (generated from grammars), data access layers (generated from different models such as UML, database schemas or web-service specifications), mock objects or test code."\cite{Alves2011}
 
 \subsection{Manually-maintained code}
-\copied
-In contrast we consider \textit{manually-maintained code} as suggested in \cite{Alves2011} all artifacts that have been created or modified by a developer either under development or during maintenance. This includes all artifacts created using any type of tool (e.g. editor). Configuration, experimental or temporary artifacts, if created or modified by a developer, should also be considered as \textit{manually-maintained code}.
+In contrast we consider \textit{manually-maintained code} as suggested in \cite{Alves2011} "all artifacts that have been created or modified by a developer either under development or during maintenance. This includes all artifacts created using any type of tool (e.g. editor). Configuration, experimental or temporary artifacts, if created or modified by a developer, should also be considered as \textit{manually-maintained code}."\cite{Alves2011}
+
 \subsection{Generator pattern}
 As a \textit{generator pattern} we consider all comments that a code generator adds to the generated artifacts during generation and that distinguish generated from manually-maintained code. Most code generators do add comments that are characteristic for the generator and identify the code as generated. This includes header comments preceding entire source code files as well as comments that mark single functions.
 
@@ -33,26 +32,12 @@ Table~\ref{table:cloneClass} depicts an example of the appearance of 3
 clone classes.
 \input{tables/clonePair_cloneClass.tex}
 
-\subsection{Clone result}
-
-
-
-
 \section{Metrics}
-\subsection{Lines of code}
-\copied
-As stated in \cite{Bernwieser2014} the \textit{Lines of Code (LOC)} metric represents the size of a software and is thus one of the easiest ways to represent its complexity. Generally the LOC metric does not provide very meaningful results as code quality does not correlate with the number of lines; it’s still useful in order to give an impression about a class’ size and thus its respective impact on the overall quality.
-
-\subsection{Clone coverage}
-\copied
-\textit{Clone coverage }is an important metric to reflect the maintainability
-and the extendibility of a software. It defines the probability that an arbitrarily chosen statement is part of a clone. If the clone rate is too high, it can be very dangerous to implement changes as they have to be performed on every clone.
-
-\subsection{Comment ratio}
+The \textit{Lines of Code (LOC)} metric represents the size of a source code file so that it can be compared to other files easily. We use it to calculate the overall sizes of the different code categories to compare the proportions they yield in total. Additionally we use it to calculate the average file size of generated and manually maintained source code.
 
 \section{Teamscale}
 \label{section:teamscale}
-\textit{Teamscale} is developed by the CQSE GmbH which was founded in 2009 as spin-off of Technical University Munich (TUM). They offer innovative consulting and products to help their customers evaluate, control and improve their software quality. \\
+\textit{Teamscale} is developed by the CQSE GmbH which was founded in 2009 as spin-off of Technical University Munich (TUM). They offer innovative consulting and products to help their customers evaluate, control and improve their software quality.\\
 Their main product is Teamscale which is a tool to analyze the quality of code with a variety of static code analyses. It helps to monitor the quality of code over time and is personally configurable to allow users to focus on personal quality goals and keep an eye on the current quality trend.\\
 The supported programming languages of Teamscale are \textit{ABAP, Groovy, Matlab, Simulink/StateFlow, Ada, Gosu, Open CL, SQLScript, C\#, IEC 61131-3 ST, OScript, Swift, C/C++, Java, PHP, TypeScript, Cobol, JavaScript, PL/SQL, Visual Basic .NET, Delphi, Kotlin, Python, Xtend, Fortran, Magik} and \textit{Rust}.\\
 One major aspect in the quality analysis performed by Teamscale is the \textit{clone-detection}. With it duplicated code created by copy \& paste can be found automatically.

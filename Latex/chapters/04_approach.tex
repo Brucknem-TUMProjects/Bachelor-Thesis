@@ -23,6 +23,10 @@ This has to be done in the following steps:
 \threaded{Retrieving the comments}
 \input{tables/commentTypes.tex}
 
+\section{Filter generated files}
+With every iteration of the algorithm the generator-pattern repository grows and more patterns are found. These patterns are used to filter the already as generated detected source code files to reduce the amount of work that has to be done by the following steps. \\
+Additionally, the amount of found presumable generator-patterns is reduced drastically when we sort out the generated files before applying the follwing steps.
+
 \section{Prepare comments for suffix-tree clone-detection}
 Once the comments are received from the Teamscale server instance they have to get prepared to be usable in the suffix-tree clone-detection as introduced by Esko~Ukkonen~\cite{Ukkonen1995}\cite{Ukkonen1993}.\\
 \threaded{The preparation}

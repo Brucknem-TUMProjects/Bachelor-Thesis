@@ -2,7 +2,39 @@
 % Add the above to each chapter to make compiling the PDF easier in some editors.
 
 \chapter{Future Work}\label{chapter:future}
+We discussed different possible future tasks that build up on the work done so far. These tasks are extensions and possible enhancements of the presented approach and give possibilities to bring the work to a state where it is usable in production.
 
+\section{Integration in Teamscale}
+The preliminary task is to integrate the generator-pattern repository into Teamscale. Therefor we have to enhance the current implementation for exclude patterns so that the generator-pattern repository can automatically detect the generated source code files during the initial analysis of the uploaded projects. This could be done fully automatic or in a way that the user has to choose for each project or even each file if it should be excluded if detected as generated.\\
+As we have seen in the previews chapters, the amount of generated code in average ranges from around 5\% up to 20\%. By including the generator-pattern repository into the static code analysis done by Teamscale the amount of work could be lowered drastically. Also execution time and the number of findings would be much lower what would make it easier to focus on quality management tasks that really have value rather than being bothered by findings that concern generated code.\\
+Our observation has been that code generation is often used in the field of lexical analysis and parsing. The resulting classes contain often many, very deep nested conditional statements. These generate many findings concerning metrics like the cyclomatic complexity. Furthermore is generated code always generated using templates or predefined grammars which leads finished classes to be mostly clones of each other, no matter when and in what context the source code files were generated. This leads to a high number of clones among the projects and to a high number of findings.\\
+So to speed up and to lower the amount of unnecessarily generated findings a future task is to integrate the generator-pattern repository into Teamscale.
+
+\section{Granularity of the generator-pattern repository}
+Currently, the generator-pattern repository can only search for the generator-patterns in the source code files. If one pattern is found in a file it is considered as generated. This may be applicable in most of the cases, but we also saw patterns that only mark the following method or data type definition as generated. This may lead to false positives in the detection of generated code.\\
+To avoid this a future task is to refine the granularity of the generator-pattern repository by adding additional information about the scope the pattern concerns. \\
+This would enhance the accuracy of the repository and would make it even better in the detection of generated source code.
+
+\section{Different clone detection approaches}
+We currently use the suffix-tree clone-detection approach made by Esko Ukkonnen~\cite{Ukkonen1995}. This approach is linear in time and space and thus good scalable.\\
+Nonetheless is the algorithm based on a recursive approach what makes it not parallelizable. Furthermore is the approach only capable of finding exact clones in strings. By extending it to an approximate string matching approach the performance could be enhanced.
+
+\subsection{Approximate string matching approaches}
+We observed that many of the generator-patterns do differ in single words, signs or the time used in the pattern. These small differences arise through changes in the templates used in the different versions of the generator. 
 \begin{itemize}
-	\item In Teamscale einbauen
+	\item It is probably a good idea to avoid changing this class manually, since it \textcolor{TUMAccentOrange}{may} be overwritten next time code is regenerated.
+	\item It is probably a good idea to avoid changing this class manually, since it \textcolor{TUMAccentOrange}{will} be overwritten next time code is regenerated.
 \end{itemize}
+The problem we faced is that e.g. these two generator-patterns do not occur as one clone class, what surely is intended by the algorithm of \cite{Ukkonen1995}. Nonetheless could it be a nice future task to implement the approximate string matching algorithm described in \cite{Ukkonen1993} to have these clone classes fall into one class what could improve the search for generator-patterns and maybe even make it completely automatic.
+
+\subsection{Parallelizable approaches}
+Many steps of the approach used in this thesis is highly multithreaded to speed up the processing of the comments. For benchmarks see~\ref{section:benchmark}.\\
+As we have seen the building of the suffix-tree and the finding of clones take around 45\% of the total time the algorithm runs. \\
+This made us think about parallelizing these two steps to increase the speed of the algorithm especially when processing large scale code bases.\\
+In the work presented in \cite{Sajnani2013} a parallel and efficient approach to large scale clone detection is presented that uses a new token-based approach. A filtering heuristic is presented that reduces the amount of token comparisons. This heuristic is used in a MapReduce based parallel algorithm that easily scales to thousands of projects.\\
+We came to the conclusion that by implementing this algorithm or one using another parallelizable approach could increase the efficiency of our algorithm. 
+
+
+\section{Evaluation on more study objects to find more generator patterns}
+The goal of the generator-pattern repository is to provide a database that can be used to detect generated source code efficient and reliable. As we have already seen in the transition from the Qualitas Corpus to the huge, randomly composed set of open source projects we could improve the capabilities of the generator-pattern repository by far.\\
+By applying the algorithm on even more projects in the future we can enhance the efficiency increasingly, and maybe to the point where it detects all code generators that are in existence up to this day.
