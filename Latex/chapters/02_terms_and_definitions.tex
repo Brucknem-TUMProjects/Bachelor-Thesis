@@ -2,25 +2,26 @@
 % Add the above to each chapter to make compiling the PDF easier in some editors.
 
 \chapter{Terms and Definitions}\label{chapter:terms}
-
+This chapter is to explain important terms and definitions used in the following chapters. It clears up the terminology and metrics used and gives an overview over Teamscale.
 \section{Terminology}
+We define the used terms and definitions to avoid the reader to be confused by arising terminology and to clarify the concrete definition we refer to when using specific terms.
 \subsection{Generated code}
-As proposed in \cite{Alves2011} "we consider \textit{generated code} all artifacts that are automatically created and modified by a tool using other artifacts as input. Common examples are parsers (generated from grammars), data access layers (generated from different models such as UML, database schemas or web-service specifications), mock objects or test code."\cite{Alves2011}
+As proposed in \cite{Alves2011} "we consider \textit{generated code} all artifacts that are automatically created and modified by a tool using other artifacts as input. Common examples are parsers (generated from grammars), data access layers (generated from different models such as UML, database schemas or web-service specifications), mock objects or test code."\mbox{\cite[p.~11]{Alves2011}}
 
 \subsection{Manually-maintained code}
-In contrast we consider \textit{manually-maintained code} as suggested in \cite{Alves2011} "all artifacts that have been created or modified by a developer either under development or during maintenance. This includes all artifacts created using any type of tool (e.g. editor). Configuration, experimental or temporary artifacts, if created or modified by a developer, should also be considered as \textit{manually-maintained code}."\cite{Alves2011}
+In contrast we consider \textit{manually-maintained code} as suggested in \cite{Alves2011} "all artifacts that have been created or modified by a developer either under development or during maintenance. This includes all artifacts created using any type of tool (e.g. editor). Configuration, experimental or temporary artifacts, if created or modified by a developer, should also be considered as \textit{manually-maintained code}."\mbox{\cite[p.~11]{Alves2011}}
 
 \subsection{Generator pattern}
-As a \textit{generator pattern} we consider all comments that a code generator adds to the generated artifacts during generation and that distinguish generated from manually-maintained code. Most code generators do add comments that are characteristic for the generator and identify the code as generated. This includes header comments preceding entire source code files as well as comments that mark single functions.
+As a \textit{generator pattern} we consider all comments that a code generator adds to the generated artifacts during generation and that distinguish generated from manually-maintained code. Most code generators do add comments that are characteristic for the generator and identify the code as generated. This includes header comments preceding entire source code files as well as comments that mark single functions or datatype definitions.
 
 \subsection{Generator pattern repository}
-The \textit{generator pattern repository} is one aim of this thesis. It is a database holding the generator patterns associated to its generator and the scope that the pattern denotes as generated.
+The \textit{generator pattern repository} is one aim of this thesis. It is a database holding the generator patterns associated to its generator. It can be used to detect generated source code files efficient and reliable.
 
 \subsection{Clone}
 We refer to \textit{clones} in the context of this thesis as text fragments that have two or more instances in comments. This includes whole comments that are identical in different source code files as well as parts of comments. The original and the duplicated fragment build a clone pair \cite{Roy2007}. 
 
 \subsection{Clone chunk}
-For the use in Ukkonens algorithm for the construction of a suffix-tree~\cite{Ukkonen1995} the text of the comments has to be normalized in \textit{clone chunks}. The suffix-tree clone-detection approach uses a sequence of clone chunks and constructs the tree on them. To be suitable each comment is split in separate words, whereas additional information gets appended to each word that will later on be used to identify the location of the word in the original comment. This information includes the uniform path to the original source code file, the line number in which the word originated and the programming language.
+For the use in Esko Ukkonens algorithm for the construction of suffix-trees~\cite{Ukkonen1995} the text of the comments has to be normalized in \textit{clone chunks}. The suffix-tree clone-detection approach uses a sequence of clone chunks and constructs the tree on them. To be suitable each comment is split in separate words, whereas additional information gets appended to each word that will later on be used to identify the location of the word in the original comment. This information includes the uniform path to the original source code file, the line number in which the word originated and the programming language.
 
 \subsection{Sentinel}
 \label{section:sentinel}
@@ -42,11 +43,11 @@ Their main product is Teamscale which is a tool to analyze the quality of code w
 The supported programming languages of Teamscale are \textit{ABAP, Groovy, Matlab, Simulink/StateFlow, Ada, Gosu, Open CL, SQLScript, C\#, IEC 61131-3 ST, OScript, Swift, C/C++, Java, PHP, TypeScript, Cobol, JavaScript, PL/SQL, Visual Basic .NET, Delphi, Kotlin, Python, Xtend, Fortran, Magik} and \textit{Rust}.\\
 One major aspect in the quality analysis performed by Teamscale is the \textit{clone-detection}. With it duplicated code created by copy \& paste can be found automatically.
 
-\subsection{suffix-tree clone-detection}
+\subsection{Suffix-tree clone-detection}
 In \cite{Ukkonen1995}, an on-line algorithm is presented for constructing the suffix-tree for a given string in time linear in the length of the string. Based on this data structure a string-matching algorithm is presented in \cite{Ukkonen1993}. These two algorithms have been extended to be usable in this thesis to detect clones among comments in source code.
 
 \subsection{Lexer}
-A tokenizer, also called lexical scanner (short: \textit{Lexer}) is a programm that splits plain text in a sequence of logical concatenated units, so called tokens. The plain text tokenized by the lexer can be anything, but we will restrict it to source code. Teamscale includes a variety of lexers for every supported programming language. 
+A tokenizer, also called lexical scanner (short: \textit{Lexer}), is a programm that splits plain text in a sequence of logical concatenated units, so called tokens. The plain text tokenized by the lexer can be anything, but we will restrict it to source code. Teamscale includes a variety of lexers for every supported programming language. 
 
 \subsection{Token}
 \label{section:token}
