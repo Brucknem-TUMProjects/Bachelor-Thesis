@@ -22,6 +22,7 @@ This has to be done in the following steps:
 \input{figures/connectAndRetrieveCommentsFlow.tex}
 \threaded{Retrieving the comments}
 \input{tables/commentTypes.tex}
+\cleardoublepage{}
 
 \section{Filter generated files}
 With every iteration of the algorithm the generator-pattern repository grows and more patterns are found. These patterns are used to filter the source code files and remove the already detected generated files. This reduces the amount of work that has to be done by the following steps. \\
@@ -36,13 +37,14 @@ The step described in Section~\ref{section:retrieveComments} produces a \code{Ma
 In the first part of the preparation one thread is generated for each source code file respective local file path. These threads will be responsible for the preparation of each single file and the results will be merged at the end.
 
 \subsection{Convert comments into CloneChunks}
+\label{section:convertToCloneChunks}
 At first the comments are split at the linebreaks into single lines and leading and trailing whitespaces of each line are removed. The resulting lines are in turn split at the whitespaces separating single words and expressions.\\
 The \code{List} of words gets now iterated and every word gets checked if it holds any valuable information. To evaluate the value of each word it is checked if it contains alphabetic letters \textit{(a-z, A-Z)} or digits. If a word only consists of nonalphabetic characters and no digits it gets sorted out \textit{(e.g. "-{}-{}-{}-{}-{}-{}-{}-", "/**", "<!--")}.\\
 The remaining words that bring a value to the approach are now converted into \code{CloneChunk}s. Therefore is added to every word the type of the comment, the offset and the line number of the comment and the local file path the comment originated from.\\
 For an overview over these properties of a comment see \ref{table:tokenProperties}.
 
 \subsection{Add sentinels}
-To prevent the suffix-tree clone-detection algorithm from intermixing the comments a sentinel~[\ref{section:sentinel}] gets added at the end of the \code{List} of \code{CloneChunk}s resulting from the previous steps. This is necessary due to the fact that the algorithm works an a single \code{List} of \code{CloneChunk}s that is build from merging all \code{CloneChunk}s from every comment.
+To prevent the suffix-tree clone-detection algorithm from intermixing the comments a sentinel\footref{section:sentinel} gets added at the end of the \code{List} of \code{CloneChunk}s resulting from the previous steps. This is necessary due to the fact that the algorithm works an a single \code{List} of \code{CloneChunk}s that is build from merging all \code{CloneChunk}s from every comment.
 
 \subsection{Merge thread results}
 Once all threads are finished, resulting in all comments being converted into \code{List}s of \code{CloneChunk}s and sentinels being added to the end of each \code{List}, all \code{List}s get concatenated into one huge \code{List} containing all words of all comments from all projects. On this \code{List} the suffix-tree clone-detection algorithm can now be applied.
@@ -111,8 +113,7 @@ As stated in \cite{Bernwieser2014}, the word \textit{generate} used to filter th
 We reviewed the presumable generator-patterns and quickly found multiple comments that mark the source code file as generated. These were collected in the Generator-Pattern Repository.\\
 Based on the repository we could iteratively find more patterns. To do so we repeated all steps described in the approach, but checked the source code files directly after retrieving them from the Teamscale instance. The source code files containing one or multiple of the generator-patterns were sorted out, so the suffix-tree clone-detection has been performed on a shrinking set of source code files containing less generated code in every iteration.\\
 We repeated searching for generator-patterns and adding them to the repository and the suffix-tree clone-detection until no generator-patterns were left.
-
-\input{tables/generatorPatternRepository.tex}
+For an overview over the generator-pattern repository see Chapter~\ref{chapter:generatorPatternRepository}.
 
 
 

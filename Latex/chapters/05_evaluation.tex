@@ -5,9 +5,9 @@
 \section{Tasks to evaluate}
 
 \subsection{Evaluation of the completeness and accuracy of the produced heuristics against a reference data set}
-To evaluate the completeness and accuracy of the heuristics produced during the development of this thesis a reference data set has been used.\\
-We implemented a procedure to check all files in the projects whether it contains a generator-pattern. These files are separately saved in a list. Bernwieser~\cite{Bernwieser2014} provided a list of files that he detected as generated to us, to witch our results are compared against. \\
-We do this to evaluate whether the approach given in this thesis is an improvement to the existing ones, especially the one given by~\cite{Bernwieser2014}. It resolves whether the generator-pattern repository can be used as a database in production while performing static code analysis.
+To evaluate the completeness and accuracy of the heuristics developed in this thesis a reference data set has been used.\\
+We implemented a procedure to determine for each file in each project whether it contains a generator-pattern. These files are separately saved in a list. Bernwieser~\cite{Bernwieser2014} provided a list of files that he detected as generated, against which we compare our results. \\
+We do this comparison to evaluate whether the approach given in this thesis is an improvement to the existing ones, especially the one given by~\cite{Bernwieser2014}. It resolves whether the generator-pattern repository can be used as a database in production while performing static code analysis.
 
 \subsection{Automatic classification of source code in a huge collection of open source systems \& evaluation of the ratio of generated code}
 To test the generator patterns stored in the repository a variety of open source projects have been acquired.\\
@@ -29,7 +29,7 @@ Table~\ref{table:qualitasCorpusAll} displays all projects that are included in t
 
 \subsection{Random Projects}
 \label{section:randomGitProjects}
-To collect a huge, randomly composed collection of open source projects a git crawler has been implemented.
+To collect a huge, randomly composed collection of open source projects we implemented a git crawler.
 By passing a keyword to the crawler it queries \href{github.com}{GitHub} to return project descriptions of projects that contain the keyword in their names or descriptions. From the received project descriptions the links to clone the projects are extracted. The projects are cloned and saved sorted by their programming languages, whereas the crawler queries for projects written in all languages supported by Teamscale to provide the highest possible level of randomness and diversity for the projects.\\
 Table~\ref{table:gitProjects} displays an overview over the projects used.
 \input{tables/gitProjects.tex}
@@ -44,17 +44,17 @@ Based on the set of generated source code files we calculated different metrics:
 \end{itemize}
 
 \section{Procedure}
-This section justifies the decisions we made for the different thresholds as well as our decision to highly multithread the different steps used in the approach.
+This section justifies the decisions we made for the choice of the minimum clone length threshold as well as our decision to highly multithread the different steps used in the approach.
 
 \subsection{Testing environment}
 The benchmarks are performed on an \href{https://www.intel.de/}{\textit{Intel Core i7-6700HQ CPU}} running with a frequency of \textit{2.60GHz} on \textit{four} physical cores with \textit{40GB RAM}. To run the Java Code we used the \href{https://www.eclipse.org/}{\textit{Eclipse IDE}} executed on \href{https://www.ubuntu.com/}{\textit{Ubuntu 18.04.1 LTS (64-bit)}} based on the \href{https://www.ubuntu.com/}{\textit{4.15.0-33-generic} Kernel}.\\
-We compare the durations of the single steps performed during the suffix-tree clone-detection approach to find generator-patterns. We used the projects \textit{azureus, batik, checkstyle, cobertura, compiere, derby, drjava, exoportal, freecol, freecs, galleon, hsqldb, htmlunit, ireport, ivatagroupware, jFin\_DateMath, javacc, jedit, jgrapht, jhotdraw, jmoney, joggplayer, jparse, jspwiki, jstock, jung, maven, netbeans, openjms, oscache, quilt, sandmark, squirrel\_sql, tapestry, trove, weka, xerces} as a reference benchmark environment and ran the procedure several times to calculate a solid average value for the durations. \\
-The decision for this environment is reasoned by its size of 37~projects including 60.235~source code files, whereas 3216~files are generated. It contains a total of 1.166.654~comments with a total of 23.683.887~valuable words. This pushes the machine the benchmark has been performed on to its maximum heap space it can provide to the Java Virtual Machine. The projects are chosen randomly to provide a meaningful mean of projects to preserve the generality of the Qualitas Corpus.
+We used the projects \textit{azureus, batik, checkstyle, cobertura, compiere, derby, drjava, exoportal, freecol, freecs, galleon, hsqldb, htmlunit, ireport, ivatagroupware, jFin\_DateMath, javacc, jedit, jgrapht, jhotdraw, jmoney, joggplayer, jparse, jspwiki, jstock, jung, maven, netbeans, openjms, oscache, quilt, sandmark, squirrel\_sql, tapestry, trove, weka, xerces} as a reference benchmark environment and ran the procedure several times to calculate a solid average value for the durations. \\
+The decision for this environment is reasoned by its size of 37~projects including 60.235~source code files, whereas 3216~files are generated. It contains a total of 1.166.654~comments with a total of 23.683.887~valuable\footref{section:convertToCloneChunks} words. This pushes the machine the benchmark has been performed on to its maximum heap space it can provide to the Java Virtual Machine. The projects are chosen randomly to provide a meaningful mean of projects to preserve the generality of the Qualitas Corpus.
 
 \subsection{Thresholds}
 The threshold that has a direct impact on the number of found generator-patterns is the minimum clone length. It describes the minimal length a sequence of \code{CloneChunk}s has to provide to be considered by the Step~\ref{section:findClones}. If a sequence is shorter than the minimum clone length it will not be added to the list of clone classes independent of the size the clone class would have.\\
 Finding the best minimum clone length has been done by performing tests with different clone lengths ranging from a length of 2\footnote{We didn't start at 1 because single words aren't meaningful when searching for generator-patterns. Especially words like \textit{the, a, by \dots} would have many occurrences that generate a huge amount of false positive clone classes.} up to a length of 25.\\
-We finally decided on the minimum clone length of 5, where as the choice has been a mostly subjective one. Nonetheless did we consider the draw-off between the amount of results that are lost due to a to high minimum clone length and the amount of irrelevant data generated by a to low minimum clone length.\\
+We finally decided on the minimum clone length of 5, where as the choice has been a mostly subjective one. Nonetheless did we consider the trade-off between the amount of results that are lost due to a to high minimum clone length and the amount of irrelevant data generated by a to low minimum clone length.\\
 Figure~\ref{fig:thresholdsAll} shows all found \code{CloneResult}s associated to the minimum clone length used to find it. It can be seen that by increasing the minimum clone length the number of \code{CloneResult}s drops nearly exponentially. \\
 After applying the processing steps described in Step~\ref{section:processCloneResults} to reduce the amount of data that is created, the remaining \code{CloneResult}s behave as shown in Figure~\ref{fig:thresholdsProcessed}. It shows that by filtering the amount of \code{CloneResult}s drops by around 99\%, dropping even further by accumulating and clustering.\\
 We tried using the minimum clone length of 3 at first due to the peak in the remaining \code{CloneResult}s. Nonetheless did we decide to use 5 because the observation was that no generator-patterns were lost by using this minimum clone length, but the manual search for the patterns in the links was much easier because the sequences were more meaningful.
@@ -73,10 +73,10 @@ This results in time savings ranging from 5.32\% \textit{(Get Uniform Paths)} up
 This section displays the results we were able to create by using the approach to find generator-patterns and by using the the resulting generator-pattern repository on the different data sets. 
 \subsection{Qualitas Corpus}
 At first we considered the Qualitas Corpus because it provided a good database and the results can be compared to the ones made in \cite{Bernwieser2014}.\\
-We found a total of 41 from the 112 projects to contain generated code. 
+We found that of 41 of the 112 projects contain generated code. 
 
 \subsubsection{Number of generator-patterns found}
-A total of 48 generator-patterns have been found. They are generated by 29 different generators. Additionally most of the patterns are regular expressions that accept up to 32 different patterns so that the final number of found generator patterns is much higher.
+A total of 48 generator-patterns have been found. They are generated by 29 different generators. Additionally most of the patterns are regular expressions that accept up to 32 different strings so that the final number of strings that are accepted by the patterns is much higher.
 
 %\input{figures/QualitasCorpusComparison/comparison.tex}
 \subsubsection{Lines of code for generated and manually maintained source code.}
@@ -120,8 +120,12 @@ and an \textbf{average} ratio of
 
 \cleardoublepage{}
 \subsection{Random projects}
-We started the search for generated code in the huge, randomly composed collection of open source projects by again applying the algorithm created for this thesis. In the first iteration we filtered the source code files using the generator-patterns found in the Qualitas Corpus. In the second iteration we used all generator-patterns found in the collection. \\
-The Tables~\ref{table:locGit} and~\ref{table:countGit} show the results of the first and the second iteration. The column \textit{Only Qualitas Corpus} refers to the first iteration using only the generator-patterns found in the Qualitas Corpus to filter the files. The column \textit{Git Patterns added} describes the second iteration using all patterns found in the Qualitas Corpus and the open source projects.
+We started the search for generated code in the huge, randomly composed collection of open source projects by again applying the algorithm created for this thesis. We did this in two steps:
+\begin{enumerate}
+	\item In the \textbf{first iteration} we filtered the source code files using the generator-patterns found in the Qualitas Corpus.
+	\item In the \textbf{second iteration} we used all generator-patterns found in the Qualitas Corpus and the random projects.
+\end{enumerate} 
+The Tables~\ref{table:locGit} and~\ref{table:countGit} show the results of the first and the second iteration. 
 
 \subsubsection{Number of generator-patterns found}
 We found a total of 34 new generator patterns that are widely distributed over the different programming languages. These are again regular expressions that accept a multitude of different patterns so that the final number of found generator patterns is much higher.
@@ -147,7 +151,7 @@ LOC_{avg} = 17.66\%, \quad LOC_{total} = 12.88\%
 Again, the average and total proportions of manually maintained files are described by the complementary probability.
 
 \subsubsection{Number of generated and manually maintained source code files.}
-Table~\ref{table:countGit} shows the results for the generated lines of code gathered during the two iteration steps.\\
+Table~\ref{table:countGit} shows the results for the generated lines of code gathered during the two iterations.\\
 The total and average proportions for the amount of generated source code files are again calculated using the equations used for the Qualitas Corpus.
 For the first iteration this results in the proportions of generated files of
 \begin{equation}
@@ -183,27 +187,30 @@ and an \textbf{average} ratio of
 \input{tables/countGit.tex}
 \cleardoublepage{}
 \section{Discussion}
-By analyzing the projects included in the Qualitas Corpus we found a wide variety of generator-patterns and were able to calculate the average and total proportions of generated to manually maintained lines of code and files. We saw that generated code makes only a small portion of the all lines of code, whereas in average a project contains 13.95\% generated lines of code and all projects contained 7.96\% generated lines of code.\\
-Additionally we saw that in average 8.07\% of files are generated whereas in total only 5.19\% are generated.\\
-We were able to find even more generator-patterns and resulting a higher number of generated source code after applying the algorithm on the huge set of open source projects. Hereby we found that the projects do contain even more generated code with a total of 12.88\% and an average of 17.66\% of the lines of code being generated. Also the total amount of files has risen to 8.97\% and the total amount to 8.68\%.\\
-Resulting from that we showed that in average the generated files always contain more lines of code than the manually maintained ones, whereas there exists no direct correlation of the actual lines of code ratios between generated and manually maintained source code files.
+By analyzing the projects included in the Qualitas Corpus we found a wide variety of generator-patterns and were able to calculate the average and total proportions of generated to manually maintained lines of code and files. We saw that generated code makes only a small portion of the lines of code, whereas in average a project contains 13.95\% generated lines of code and all projects contained 7.96\% generated lines of code.\\
+Additionally we saw that on average 8.07\% of files are generated whereas in total only 5.19\% are generated.\\
+We were able to find even more generator-patterns and resulting a higher number of generated source code after applying the algorithm on the huge set of open source projects. Hereby we found that the projects do contain even more generated code with a total of 12.88\% and an average of 17.66\% of the lines of code being generated. Also the total amount of files containing generated code has risen to 8.97\% and the total amount to 8.68\%.\\
+Resulting from that we showed that in average the generated files always contain more lines of code than the manually maintained files, whereas there exists no direct correlation of the actual lines of code ratios between generated and manually maintained source code files.
 
 \subsection{Completeness and accuracy}
 We found the generator-patterns by iterating over the Qualitas Corpus and applying the algorithm described in Chapter~\ref{chapter:approach}. The found patterns have been added to the generator-pattern repository and used to filter all files that we were able to classify as generated in the next iteration.\\
 In every iteration the amount of possible generator-patterns could be lowered by using this technique very fast until all generator-patterns were reviewed by hand and so all patterns have been found in the Qualitas Corpus.\\
-We compared our results to these described in \cite{Bernwieser2014} and could confirm that our approach found all generated files. Resulting from this we concluded that our approach is as complete as it can be using the technique of suffix-tree clone-detection on the comments.\\
+We compared our results to these described in \cite{Bernwieser2014} and could confirm that our approach found all generated files. Resulting from this we concluded that our approach is an improvement over the technique used in \cite{Bernwieser2014}.\\
 By using the approach on the huge random collection of open source projects we detected some more generator-patterns that were not included in the Qualitas Corpus. Nonetheless we were able to filter many generated files in the first iteration by using the generator-pattern repository what supports our assertion that the algorithm found all generator patterns that were included in the Qualitas Corpus.\\
 Additionally, the generator-pattern repository is easily extendable with new patterns at any time what was shown by applying the algorithm on the collection of open source projects. So by gradually extending the repository by applying the suffix-tree clone-detection approach on the comments, the repository will saturate with patterns and will over time become complete and highly accurate in terms of generator-patterns.
 
 \subsection{Relevance of results}
-
-\annotation{Not sure what to write in this section.\\ Maybe how the generator-pattern repository can be used by Teamscale to lower amount of work done in analysis by excluding the generated files?}
+The final aim of this thesis is to integrate the generator-pattern repository into Teamscale. \\
+As we have seen in the previews sections, the amount of generated code in average ranges from around 5\% up to 20\%. By including the generator-pattern repository into the static code analysis done by Teamscale the amount of work could be lowered drastically. Also execution time and the number of findings would be much lower what would make it easier to focus on quality management tasks that really have value rather than being bothered by findings that concern generated code.\\
+Our observation has been that code generation is often used in the field of lexical analysis and parsing. The resulting classes contain often many, very deep nested conditional statements. These generate many findings concerning metrics like the cyclomatic complexity. Furthermore is generated code always generated using templates or predefined grammars which leads finished classes to be mostly clones of each other, no matter when and in what context the source code files were generated. This leads to a high number of clones among the projects and to a high number of findings.\\
+So to speed up and to lower the amount of unnecessarily generated findings the generator-pattern repository can be used.
 
 \section{Threats to validity}
-This section describes the threads that may have an impact on the validity of the results generated by our approach and justifies how .
+This section describes the threats that may have an impact on the validity of the results generated by our approach.
+
 \subsection{Wrong filtering}
-In Step~\ref{section:filterCloneResults} we used the regular expression shown in Listing~\ref{lst:generatorPattern}. This reduces the amount of resulting \code{CloneResult}s to a level that can be processed by a human. Our observations showed that indeed most of the generator-patterns contained the regex so that it can be considered as only a small thread.\\
-Nonetheless did we find generator-patterns that didn't contain the regex. These patterns make only a very small portion of all generator-patterns so we didn't see a value in refining it. Furthermore does step~\ref{section:generateLinks} also save files and links for the not generated found \code{CloneClass}es that can be reviewed in addition to the generated ones. The problem arising is that the amount of data to review is way to high as i could be process by hand, but the ones that had the highest number of occurrences were also searched by us what revealed the patterns that didn't include the regular expression.\\
+In Step~\ref{section:filterCloneResults} we used the regular expression shown in Listing~\ref{lst:generatorPattern}. This reduces the amount of resulting \code{CloneResult}s to a level that can be processed by a human. Our observations showed that indeed most of the generator-patterns contained the regex so that it can be considered as only a small threat.\\
+Nonetheless did we find generator-patterns that didn't contain the regex. These patterns make only a very small portion of all generator-patterns so we didn't see a value in refining it. Furthermore does step~\ref{section:generateLinks} also save files and links for the not generated found \code{CloneClass}es that can be reviewed in addition to the generated ones. The problem arising is that the amount of data to review is way to high to be processed by hand. Nonetheless did we inspect the proposed patterns with the highest number of occurrences by following the links, what revealed the patterns that didn't include the regular expression.\\
 In conclusion we can say that the regular expression is a very good filter to find the generator-patterns which can be easily extended to also review the patterns that were filtered out to find all generator-patterns.
 
 \subsection{Minimum clone length vs. irrelevant data}
@@ -222,5 +229,5 @@ Nonetheless the problem we see in using the Qualitas Corpus is that it consists 
 This led us to the conclusion that in conjunction the two reference datasets give a representative profile of very much, very different projects that are all developed under very unique circumstances.
 
 \subsection{Generators without pattern}
-A last thread we are facing is that there exists also a multitude of code generators that do not mark their artifacts with a characteristic pattern in the comments. Especially custom written generators often don't add a generator pattern.\\
+A last threat we are facing is that there exists also a multitude of code generators that do not mark their artifacts with a characteristic pattern in the comments. Especially custom written generators often don't add a generator pattern.\\
 This problem can't be faced with the current approach of suffix-tree clone-detection on the comments. To find these generated artifacts one has to combine our approach with e.g. the one described in \cite{Bernwieser2014}.

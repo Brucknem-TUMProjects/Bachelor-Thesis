@@ -3,9 +3,9 @@
 
 \chapter{Introduction}\label{chapter:introduction}
 
-Source code of software can be categorized with respect to its role in the maintainability of a software system. The biggest categories besides manually produced production code, which is written and maintained by hand of a developer, are generated code and test-code. In many systems up to 50\% of the source code arise in these categories.
+Source code of software can be categorized with respect to its role in the maintainability of a software system. The biggest categories besides manually produced production code, which is written and maintained by hand of a developer, are generated code and test code. In many systems up to 50\% of the source code arise in these categories.
 
-Static analysis detects problems in the quality of code. At the same time the code category is essential for the relevance of the examined quality criterion. Security flaws and performance problems which are crucial in production code can be irrelevant in generated code since it is not directly edited during maintenance. To enhance the relevance and significance of the results of static analysis the category of the examined source code has to be taken into account.
+Static analysis detects problems in the quality of code, whereas the code category is essential for the relevance of the examined quality criterion. Security flaws and performance problems which are crucial in production code can be irrelevant in generated code since it is not directly edited during maintenance. To enhance the relevance and significance of the results of static analysis the category of the examined source code has to be taken into account.
 
 This applies particularly in benchmarks that investigate the frequency of the occurrence of quality defects and the distribution of metric values in a variety of software projects. Since a manual classification of source code in a multitude of projects is not feasible in practice an automated approach is necessary.
 
@@ -13,10 +13,10 @@ This work targets the conception and prototypical implementation of an automatic
 
 \begin{itemize}
 	\item A prototypical implementation of heuristics to detect generated code which use techniques of clone-detection on the comments that are extracted from the source code.
-	\item A list of patterns that detect generated code of several code generators will be derived by means of the comments. To this end a generator pattern repository will be created.
+	\item A list of patterns that detect generated code of several code generators will be derived by means of the comments. To this end a generator-pattern repository will be created.
 	\item The completeness and accuracy of the developed patterns will be evaluated on a reference data set.\\
 	This data set is "a large curated collection of open source Java systems. The corpus reduces the cost of performing
-	large empirical studies of code and supports comparison of measurements of the same artifacts."\cite[p.~1]{TemperoEwanandAnslowCraigandDietrichJensandHanTedandLiJingandLumpeMarkusandMeltonHaydenandNoble2010a}. It contains a total of 112 projects maintained by a multitude of big software companies. These projects are written in Java and have a total of 33.971.977 lines of code ranging form 6.991 up to 7.142.778.
+	large empirical studies of code and supports comparison of measurements of the same artifacts."\cite[p.~1]{TemperoEwanandAnslowCraigandDietrichJensandHanTedandLiJingandLumpeMarkusandMeltonHaydenandNoble2010a}. It contains a total of 112 projects maintained by a multitude of big software companies. These projects are written in Java and have a total of 33.971.977 lines of code ranging form 6.991 up to 7.142.778 lines of code.
 	\item Automatic classification of source code in a variety of open source systems and evaluation of the amount of generated code.\\
 	We gathered a huge, randomly composed collection of open source projects containing a total of 1.112 projects written in 18 different programming languages. The projects contain a total of 23.638.640 lines of code, whereas they are distributed among the programming languages ranging from 2.738 up to 6.828.723 lines of code. 
 \end{itemize}
