@@ -1,0 +1,31 @@
+% !TeX root = ../main.tex
+% Add the above to each chapter to make compiling the PDF easier in some editors.
+
+\begin{lstlisting}[
+	caption=Java function to normalize a source code file to be easily usable with the generator-pattern repository.,
+	label=lst:normalizeFunction]
+static String normalize(String toNormalize) {
+	StringBuilder sb = new StringBuilder();
+
+	for (String line : toNormalize.split("\\R")) {
+		for (String word : line.split("\\s+")) {
+			if (isValuable(word)) {
+				sb.append(word + " ");
+			}
+		}
+	}
+
+	return sb.toString();
+}	
+
+static boolean isValuable(String word) {
+	for (Character letter : word.toCharArray()) {
+		if (Character.isAlphabetic(letter) || Character.isDigit(letter)) {
+			return true;
+		}
+	}
+	
+	return false;
+}
+	
+\end{lstlisting}

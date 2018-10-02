@@ -2,8 +2,22 @@
 % Add the above to each chapter to make compiling the PDF easier in some editors.
 
 \chapter{Generator-Pattern Repository}\label{chapter:generatorPatternRepository}
-The following pages display the current status of the generator-pattern repository.
+The following pages display the current status of the generator-pattern repository and its usage. It is optimized for the use with the regular expression framework used by the Java programming language.\\
+When we applied the approach presented in this thesis we normalized the comments into \code{CloneChunk}s. We did so by using the procedure presented in section~\ref{section:convertToCloneChunks}.\\
+The resulting \code{List} of \code{CloneChunk}s represents a \code{List} of single words, whereas all whitespaces and words without value have been removed. The resulting generator-pattern repository thus holds the generator-patterns without any formatting and programming language specific comment markers.
 
+\section{Usage of the generator-pattern repository}
+The easiest way to use the repository is by compiling the generator-patterns into regular expressions and normalizing the source code files when searching for the generator-patterns. This can be done in two steps:
+
+\begin{enumerate}
+	\item To use the generator-pattern \code{String}s one has to at first replace the placeholders \textit{<Version>, <Timestamp>, <Project>, <Class>} and \textit{<Link>}. The current observations have shown that a good replacement is the regex \textit{(.*)} that represents a sequence of any character with a variable length. Afterwards the resulting \code{String}s can be compiled into \code{Pattern}s and used in the regex framework.
+	\item Due to the fact that the formatting of the generator-patterns has been removed to have them as universally as possible the source code files have to be normalized. \\
+	At first one has to split the source code files at every linebreak and whitespace. Afterwards, every word is checked if it is valuable (see section~\ref{section:convertToCloneChunks}). The remaining words get merged into one \code{String}, whereas the words are delimited by a single whitespace. An exemplary Java implementation is displayed in listing~\ref{lst:normalizeFunction}.\\
+	On the resulting  \code{String} a regex matching can be performed with the generator-patterns.
+\end{enumerate}
+\input{listings/normalizeFunction.tex}
+
+\cleardoublepage{}
 \section{Qualitas Corpus}
 The following tables picture the set of generator-patterns that was found using the algorithm on the Qualitas Corpus.
 \input{tables/generatorPatternRepositoryQC.tex}

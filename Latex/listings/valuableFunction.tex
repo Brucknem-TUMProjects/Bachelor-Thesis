@@ -1,0 +1,17 @@
+% !TeX root = ../main.tex
+% Add the above to each chapter to make compiling the PDF easier in some editors.
+
+\begin{lstlisting}[
+	caption=Java function to check if a word is valuable.,
+	label=lst:valuableFunction]	
+static boolean isValuable(String word) {
+	for (Character letter : word.toCharArray()) {
+		if (Character.isAlphabetic(letter) || Character.isDigit(letter)) {
+			return true;
+		}
+	}
+
+	return false;
+}
+	
+\end{lstlisting}
