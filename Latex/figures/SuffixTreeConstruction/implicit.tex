@@ -2,33 +2,31 @@
 % Add the above to each chapter to make compiling the PDF easier in some editors.
 \setlength{\extrarowheight}{-10em}
 \begin{figure}	
-	\centering
-	\begin{tikzpicture}[
-		scale = 1, transform shape, thick, TUMLightGray,
-		every node/.style = {draw, TUMBlue, circle, minimum size = 1mm},
-		grow = down,  % alignment of characters
-		level 1/.style = {sibling distance=3cm},
-		level 2/.style = {sibling distance=2cm}, 
-		level 3/.style = {sibling distance=2cm}, 
-		level distance = 8cm
-		]
-		
-		\node[](Root){}
-		child{node (Do not modify){}}
-		child{node (not modify){}}
-		child{node (modify){}}
-		child{node (E){}}
-		;
-		
-		% Labels
-		\begin{scope}[nodes = {Black, draw = none, sloped, anchor=center, below}]
-		\path (Root) -- (Do not modify) node [near start, left] {Do not modify \dots Do not modify};		
-		\path (Root) -- (not modify) node [near start, left] {not modify \dots Do not modify};		
-		\path (Root) -- (modify) node [near start, right] {modify \dots Do not modify};		
-		\path (Root) -- (E) node [near start, right] { \dots Do not modify};				
-		\end{scope}			
-	\end{tikzpicture}
-	\caption{The implicit suffix tree for the list of words "Do not modify \dots Do not modify". }
-	\label{fig:suffixTreeConstructionImplicit}
+\centering
+\begin{tikzpicture}[
+scale = .8, transform shape, thick, TUMLightGray,
+every node/.style = {draw, TUMBlue, circle, minimum size = 1mm},
+grow = down,  % alignment of characters
+level 1/.style = {sibling distance=3cm},
+level distance = 8cm
+]
+
+\node[](Root){}
+child{node (Do not modify){}}
+child{node (not modify){}}
+child{node (modify){}}
+child{node (E){}}
+;
+
+% Labels
+\begin{scope}[nodes = {Black, draw = none, sloped, anchor=center, below}]
+\path (Root) -- (Do not modify) node [near start, left] {Do not modify \dots Do not modify};		
+\path (Root) -- (not modify) node [near start, left] {not modify \dots Do not modify};		
+\path (Root) -- (modify) node [near start, right] {modify \dots Do not modify};		
+\path (Root) -- (E) node [near start, right] { \dots Do not modify};				
+\end{scope}			
+\end{tikzpicture}
+\caption{The implicit suffix tree for the list of words "Do not modify \dots Do not modify". }
+\label{fig:suffixTreeConstructionImplicit}
 \end{figure}
 \setlength{\extrarowheight}{0em}

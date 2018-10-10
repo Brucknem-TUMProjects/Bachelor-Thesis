@@ -5,16 +5,17 @@
 We discussed different possible future tasks that build up on the work done so far. These tasks are extensions and possible enhancements of the presented approach and give possibilities to bring the work to a state where it is usable in production.
 
 \section{Integration into Teamscale}
-The preliminary task is to integrate the generator-pattern repository into Teamscale. Therefore we have to enhance the current implementation for exclude patterns so that the generator-pattern repository can automatically detect the generated source code files during the initial analysis of the uploaded projects. This could be done fully automatic or in a way that the user has to choose for each project or even each file if it should be excluded if detected as generated.
+The preliminary task is to integrate the generator-pattern repository into Teamscale. Therefore, we have to enhance the current implementation for exclude patterns so that the generator-pattern repository can automatically detect the generated source code files during the initial analysis of the uploaded projects. This could be done fully automatic or in a way that the user has to choose for each project or even each file if it should be excluded if detected as generated.
 
 \section{Granularity of the generator-pattern repository}
 Currently, the generator-pattern repository can only search for the generator-patterns in the source code files. If one pattern is found in a file it is considered as generated. This may be applicable in most of the cases, but we also observed patterns that only mark the following method or datatype definition as generated. This may lead to false positives in the detection of generated code.\\
 To avoid this a future task is to refine the granularity of the generator-pattern repository by adding additional information about the scope the pattern concerns. \\
 This would enhance the accuracy of the repository and would make it even better in the detection of generated source code.
 
+\cleardoublepage{}
 \section{Different clone detection approaches}
 We currently use the suffix-tree clone-detection approach made by Esko Ukkonnen~\cite{Ukkonen1995}. This approach is linear in time and space and thus good scalable.\\
-Nonetheless is the algorithm based on a recursive approach what makes it not parallelizable. Furthermore is the approach only capable of finding exact clones in strings. By extending it to an approximate string matching approach the performance could be enhanced.
+Nonetheless, is the algorithm based on a recursive approach what makes it not parallelizable. Furthermore, is the approach only capable of finding exact clones in strings. By extending it to an approximate string matching approach the performance could be enhanced.
 
 \subsection{Approximate string matching approaches}
 We observed that many of the generator-patterns do differ in single words, signs or the time used in the pattern. These small differences arise through changes in the templates used in the different versions of the generator. 
@@ -22,10 +23,10 @@ We observed that many of the generator-patterns do differ in single words, signs
 	\item It is probably a good idea to avoid changing this class manually, since it \textcolor{TUMAccentOrange}{may} be overwritten next time code is regenerated.
 	\item It is probably a good idea to avoid changing this class manually, since it \textcolor{TUMAccentOrange}{will} be overwritten next time code is regenerated.
 \end{itemize}
-The problem we faced is that e.g. these two generator-patterns do not occur as one clone class, what surely is intended by the algorithm of \cite{Ukkonen1995}. Nonetheless could it be a nice future task to implement the approximate string matching algorithm described in \cite{Ukkonen1993} to have these clone classes fall into one class what could improve the search for generator-patterns and maybe even make it completely automatic.
+The problem we faced is that e.g. these two generator-patterns do not occur as one clone class, what surely is intended by the algorithm of \cite{Ukkonen1995}. Nonetheless, it could be a nice future task to implement the approximate string matching algorithm described in \cite{Ukkonen1993} to have these clone classes fall into one class what could improve the search for generator-patterns and maybe even make it completely automatic.
 
 \subsection{Parallelizable approaches}
-Many steps of the approach used in this thesis are highly multithreaded to speed up the processing. For benchmarks see~\ref{section:benchmark}.\\
+Many steps of the approach used in this thesis are highly multi-threaded to speed up the processing. For benchmarks see~\ref{section:benchmark}.\\
 As we have seen the building of the suffix-tree and the finding of clones take around 45\% of the total time the algorithm runs. \\
 This made us think about parallelizing these two steps to increase the speed of the algorithm especially when processing large scale code bases.\\
 In the work presented in \cite{Sajnani2013} a parallel and efficient approach to large scale clone detection is presented that uses a new token-based approach. A filtering heuristic is presented that reduces the amount of token comparisons. This heuristic is used in a MapReduce based parallel algorithm that easily scales to thousands of projects.\\

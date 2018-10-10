@@ -2,17 +2,18 @@
 % Add the above to each chapter to make compiling the PDF easier in some editors.
 \setlength{\extrarowheight}{.5em}
 \begin{table}
-	\caption{Token properties}
+	\caption{The properties that define a token.}
 	\label{table:tokenProperties}
 	\begin{tabularx}{\textwidth}{c|L}
 		\textbf{Property} & \textbf{Description} \\
 		\hline
 		Text & The original input text of the token, copied verbatim from the source. \\
-		Offset & The number of characters before this token in the text. The offset is 0-based and inclusive. \\
-		End Offset & The number of characters before the end of this token in the text (i.e. the 0-based index of the last character, inclusive). \\
+		Offset & The number of characters before this token in the text. \\
+		Line number & The line in which the token is found in the original file. \\
+%		End Offset & The number of characters before the end of this token in the text (i.e. the 0-based index of the last character, inclusive). \\
 		Origin ID & The string that identifies the origin of this token. This can, e.g., be a uniform path to the resource. Its actual content depends on how the token gets constructed. \\
 		Type & The type of the token. \\
-		Language & The programming language in which the source code file is written that contains the token.		
+%		Language & The programming language in which the source code file is written that contains the token.		
 	\end{tabularx}
 \end{table}
 \setlength{\extrarowheight}{0em}

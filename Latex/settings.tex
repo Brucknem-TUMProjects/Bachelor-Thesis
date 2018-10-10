@@ -4,7 +4,7 @@
 \usepackage[T1]{fontenc}
 \usepackage[sc]{mathpazo}
 \usepackage[ngerman,american]{babel}
-\usepackage[autostyle]{csquotes}
+%\usepackage[autostyle]{csquotes}
 \usepackage[%
   backend=bibtex,
   url=false,
@@ -51,6 +51,7 @@
 \definecolor{TUMAccentLightBlue}{HTML}{98C6EA}
 \definecolor{TUMAccentBlue}{HTML}{64A0C8}
 
+
 \rowcolors{2}{}{TUMLightGray!60}
 
 % Settings for pgfplots
@@ -90,7 +91,8 @@
 \usepackage{hyperref}
 \usepackage{relsize}
 \usepackage{makecell}
-
+\usepackage [autostyle, english = american]{csquotes}
+\MakeOuterQuote{"}
 % Settings for table
 %\setlength{\extrarowheight}{.5em}
 %\setlength{\belowcaptionskip}{-10pt}
@@ -100,12 +102,12 @@
 \newcommand{\copied}{\quad\\\textcolor{red}{Im Moment noch einfach kopiert. Dringend umschreiben.}\\}
 \newcommand{\code}[1]{\large{\textcolor{TUMBlue}{\texttt{#1}}}\normalsize}
 \newcommand{\return}{$\hookleftarrow$}
-\newcommand{\version}{<Version>}
-\newcommand{\timestamp}{<Timestamp>}
-\newcommand{\project}{<Project>}
-\newcommand{\class}{<Class>}
-\newcommand{\link}{<Link>}
-\newcommand{\threaded}[1]{#1 is highly multithreaded to speed it up. For benchmarks see~\ref{section:benchmark}.}
+\newcommand{\version}{<Version> }
+\newcommand{\timestamp}{<Timestamp> }
+\newcommand{\project}{<Project> }
+\newcommand{\class}{<Class> }
+\newcommand{\link}{<Link> }
+\newcommand{\threaded}[1]{#1 is highly multi-threaded to speed it up. For benchmarks see~\ref{section:benchmark}.}
 
 %Table settings
 \newcolumntype{C}{>{\centering\arraybackslash}X}
